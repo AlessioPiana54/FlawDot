@@ -3,13 +3,23 @@
 import { readFileSync } from "node:fs";
 
 const [tool, file, ...extra] = process.argv.slice(2);
-if (!["semgrep", "axe"].includes(tool) || !file || extra.length) {
-  console.error("quality-gate: usage: node quality-gate.mjs <semgrep|axe> <report.json>");
+if (!["semgrep", "axe", "osv"].includes(tool) || !file || extra.length) {
+  console.error("quality-gate: usage: node quality-gate.mjs <semgrep|axe|osv> <report.json>");
   process.exit(2);
 }
 
 try {
   const report = JSON.parse(readFileSync(file, "utf8"));
+  if (tool === "osv") {
+    // osv-scanner JSON (v2): one group per advisory, with the CVSS score in max_severity.
+    // High starts at 7.0. An advisory with no score cannot be shown to be below high, so it blocks.
+    if (!Array.isArray(report?.results)) throw new Error("Incomplete scan");
+    const groups = report.results.flatMap((r) => r.packages ?? []).flatMap((p) => p.groups ?? []);
+    const scores = groups.map((g) => Number.parseFloat(g.max_severity));
+    const count = scores.filter((s) => Number.isNaN(s) || s >= 7).length;
+    console.log(`osv: ${groups.length} advisories, ${count} blocking (CVSS >= 7.0 or unscored)`);
+    process.exit(count ? 1 : 0);
+  }
   let levels;
   let allowed;
   let blocking;
