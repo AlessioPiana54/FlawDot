@@ -1,0 +1,58 @@
+# Claude Code
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+.mcp.json
+graphify-out/
+
+# Documenti di lavoro generati da Claude (spec, ADR, vincoli, wireframe, task)
+docs/
+CONSTRAINTS.md
+SPEC.md
+TASKS.md
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+out/
+.astro/
+*.tsbuildinfo
+
+# Environment and secrets (API keys: Claude, Figma)
+.env
+.env.*
+!.env.example
+
+# Local data (SQLite history, saved login sessions, captures)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+storageState*.json
+.uxray/
+
+# Test and Playwright artifacts
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/
