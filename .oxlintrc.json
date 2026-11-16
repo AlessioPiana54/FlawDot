@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "import"],
+  "categories": { "correctness": "error" },
+  "options": { "typeAware": true },
+  "ignorePatterns": ["**/dist/**", "**/coverage/**", "docs/**"],
+  "rules": {
+    "import/no-cycle": "error"
+  },
+  "overrides": [
+    {
+      "files": ["packages/core-model/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@flawdot/*"],
+                "message": "core-model must not import other packages (ADR-0001)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

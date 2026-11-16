@@ -11,6 +11,14 @@ CONSTRAINTS.md
 SPEC.md
 TASKS.md
 
+# File della skill impeccable (contesto di design)
+PRODUCT.md
+DESIGN.md
+.impeccable/
+
+# Output del server MCP Playwright
+.playwright-mcp/
+
 # Dependencies
 node_modules/
 .pnpm-store/
@@ -33,7 +41,7 @@ out/
 *.sqlite
 *.sqlite3
 storageState*.json
-.uxray/
+.flawdot/
 
 # Test and Playwright artifacts
 coverage/

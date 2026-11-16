@@ -29,8 +29,8 @@ This starts a local server and opens the interface in your browser. From there y
 ## Planned approach
 
 - **Capture** with Playwright: screenshots, DOM, bounding boxes and the accessibility tree.
-- **Deterministic checks** with axe-core, marked as *Verified*.
-- **AI review** with Claude vision, marked as *AI suggestion* with a confidence level. You bring your own API key,
+- **Deterministic checks** with axe-core, marked as _Verified_.
+- **AI review** with Claude vision, marked as _AI suggestion_ with a confidence level. You bring your own API key,
   which stays on your machine.
 - **Local first**: everything runs on your computer, so FlawDot can check sites on `localhost` as well as public ones.
 
