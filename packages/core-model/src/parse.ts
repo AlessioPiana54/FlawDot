@@ -12,8 +12,9 @@ export interface ParseOptions {
 
 /**
  * Validates data that comes from outside (AI answers, MCP tool arguments, HTTP bodies) and returns it
- * typed, or throws a `FlawDotError`. The message lists where each problem is and what is wrong, never the
- * received value: Zod's messages do not echo it, and an API key must not end up in an error.
+ * typed, or throws a `FlawDotError`. The message lists where each problem is and what is wrong. It does not
+ * repeat the received value (Zod's own messages do not), but names that come from the input can appear in it:
+ * the path of a record key, or the key names of an `unrecognized_keys` problem.
  */
 export function parseOrThrow<S extends z.ZodType>(
   schema: S,

@@ -22,6 +22,14 @@ describe("progressEvent", () => {
     expect(progressEventSchema.parse(event)).toEqual(event);
   });
 
+  it("does not accept a run_finished event that says the run is still running", () => {
+    const event = { type: "run_finished", runId: RUN_ULID, status: "running" };
+    expect(progressEventSchema.safeParse(event).success).toBe(false);
+    for (const status of ["completed", "cancelled", "partial"]) {
+      expect(progressEventSchema.safeParse({ ...event, status }).success).toBe(true);
+    }
+  });
+
   it("covers every phase of the pipeline", () => {
     expect(PHASES).toEqual(["capture", "rules", "ai", "done"]);
     for (const phase of PHASES) {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_WEIGHTS,
+  FlawDotError,
   PENALTY,
   REPEAT_CAP,
   REPEAT_STEP,
@@ -64,8 +65,8 @@ function finding(
 
 const noStates = new Map<string, FindingState>();
 
-describe("constants (to be tuned on real sites, see SPEC-core-model)", () => {
-  it("has the values of the spec", () => {
+describe("constants (to be tuned on real sites)", () => {
+  it("has the values of the formula: 100 x e^(-penalty/40), 10/4/1, +10% per repeat up to x2", () => {
     expect(SCORE_K).toBe(40);
     expect(PENALTY).toEqual({ critical: 10, medium: 4, low: 1 });
     expect(REPEAT_STEP).toBe(0.1);
@@ -88,7 +89,7 @@ describe("findingWeight", () => {
   });
 });
 
-describe("categoryScore: the hand-computed cases of the spec", () => {
+describe("categoryScore: hand-computed cases", () => {
   it.each([
     ["no findings", [], 100],
     ["1 critical, verified", [finding("critical")], 78],
@@ -255,6 +256,59 @@ describe("category weights", () => {
     ["contain a weight above 1", { ui: 2, ux: -1, accessibility: 0, conversion: 0 }],
   ])("rejects weights that %s", (_why, weights) => {
     expect(categoryWeightsSchema.safeParse(weights).success).toBe(false);
+  });
+});
+
+describe("categoryPenalty: one page, one viewport, one category", () => {
+  const one = finding("critical", "same");
+
+  it("accepts an empty list and a list that belongs together", () => {
+    expect(categoryPenalty([], noStates)).toBe(0);
+    expect(categoryPenalty([one, finding("low", "other")], noStates)).toBe(11);
+  });
+
+  it.each([
+    ["another category", { category: "ux" }],
+    ["another viewport", { viewport: "mobile" }],
+    ["another page", { pageUrl: "http://localhost:3000/elsewhere" }],
+  ] as const)(
+    "refuses findings of %s instead of merging them into a wrong number",
+    (_what, patch) => {
+      // The same rule on desktop and on mobile would be one group and be counted too little.
+      const error = (() => {
+        try {
+          categoryPenalty([one, { ...finding("critical", "same"), ...patch }], noStates);
+        } catch (caught) {
+          return caught;
+        }
+        return undefined;
+      })();
+      expect(error).toBeInstanceOf(FlawDotError);
+      expect((error as FlawDotError).code).toBe("INTERNAL");
+    },
+  );
+});
+
+describe("edge cases found in review", () => {
+  it("gives a category with weight 0 no say when another one has weight", () => {
+    const onlyUi = { ui: 1, ux: 0, accessibility: 0, conversion: 0 };
+    expect(pageScore({ ui: 70, accessibility: 50 }, onlyUi)).toBe(70);
+  });
+
+  it("puts a score between two integers in the lower band", () => {
+    expect(band(89.9)).toBe("good");
+    expect(band(74.9)).toBe("needs_work");
+    expect(band(49.9)).toBe("critical");
+  });
+
+  it("accepts all the weight on one category, and rejects a negative one even when the sum is 1", () => {
+    expect(
+      categoryWeightsSchema.safeParse({ ui: 1, ux: 0, accessibility: 0, conversion: 0 }).success,
+    ).toBe(true);
+    expect(
+      categoryWeightsSchema.safeParse({ ui: 1.5, ux: -0.5, accessibility: 0, conversion: 0 })
+        .success,
+    ).toBe(false);
   });
 });
 

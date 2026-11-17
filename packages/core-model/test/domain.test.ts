@@ -10,6 +10,7 @@ import {
   boxSchema,
   captureSchema,
   elementSchema,
+  httpUrlSchema,
   pageTargetSchema,
   projectSchema,
   runSchema,
@@ -22,11 +23,11 @@ const rejects = (schema: { safeParse(value: unknown): { success: boolean } }, va
   expect(schema.safeParse(value).success).toBe(false);
 
 describe("constants", () => {
-  it("lists severities from most to least severe (numbering relies on it)", () => {
+  it("lists severities from most to least severe (the circle numbering will rely on it)", () => {
     expect(SEVERITIES).toEqual(["critical", "medium", "low"]);
   });
 
-  it("keeps the vocabulary of the spec", () => {
+  it("keeps the fixed vocabulary of categories, viewports and languages", () => {
     expect(CATEGORIES).toEqual(["ui", "ux", "accessibility", "conversion"]);
     expect(VIEWPORT_NAMES).toEqual(["desktop", "tablet", "mobile"]);
     expect(REPORT_LANGUAGES).toEqual(["en", "it"]);
@@ -142,8 +143,8 @@ describe("element", () => {
     rejects(elementSchema, { ...element, name: "a".repeat(ELEMENT_NAME_MAX + 1) });
   });
 
-  // Literal numbers on purpose: the spec says 120, so changing the constant must break this test.
-  it("cuts the accessible name at 120 characters, as the spec says", () => {
+  // Literal numbers on purpose: 120 is a contract value, so changing the constant must break this test.
+  it("limits the accessible name to 120 characters", () => {
     expect(ELEMENT_NAME_MAX).toBe(120);
     expect(elementSchema.safeParse({ ...element, name: "a".repeat(120) }).success).toBe(true);
     rejects(elementSchema, { ...element, name: "a".repeat(121) });
@@ -154,6 +155,61 @@ describe("element", () => {
     ["an empty selector", { selector: "" }],
     ["an empty tag", { tag: "" }],
   ])("rejects %s", (_why, patch) => rejects(elementSchema, { ...element, ...patch }));
+});
+
+describe("http URLs", () => {
+  it.each(["http://localhost:3000", "https://example.com/path@not-a-user", "https://a.b/c?d=e@f"])(
+    "accepts %s",
+    (url) => {
+      expect(httpUrlSchema.safeParse(url).success).toBe(true);
+    },
+  );
+
+  it.each([
+    "https://user:secret@example.com/",
+    "http://user@example.com",
+    "https://:secret@example.com/",
+  ])("rejects credentials in the URL: %s", (url) => {
+    expect(httpUrlSchema.safeParse(url).success).toBe(false);
+  });
+});
+
+describe("run: states that cannot exist", () => {
+  const finishedAt = "2026-11-17T10:05:00.000Z";
+
+  it.each(["completed", "cancelled", "partial"] as const)(
+    "accepts a %s run that has an end time",
+    (status) => {
+      expect(runSchema.safeParse({ ...run, status, finishedAt }).success).toBe(true);
+    },
+  );
+
+  it.each([
+    ["a running run that already has an end time", { status: "running", finishedAt }],
+    ["a completed run without an end time", { status: "completed", finishedAt: null }],
+    ["a cancelled run without an end time", { status: "cancelled", finishedAt: null }],
+    [
+      "the same viewport twice",
+      { viewports: [DEFAULT_VIEWPORTS.desktop, { ...DEFAULT_VIEWPORTS.desktop, width: 1920 }] },
+    ],
+    ["the same page twice", { pages: [pageTarget, pageTarget] }],
+  ])("rejects %s", (_why, patch) => rejects(runSchema, { ...run, ...patch }));
+});
+
+describe("capture: states that cannot exist", () => {
+  it("rejects two elements with the same mark", () => {
+    rejects(captureSchema, { ...capture, elements: [element, { ...element, selector: "#other" }] });
+  });
+
+  it("accepts elements with different marks", () => {
+    const second = { ...element, mark: 2, selector: "#other" };
+    expect(captureSchema.safeParse({ ...capture, elements: [element, second] }).success).toBe(true);
+  });
+
+  it("accepts a selector of 2000 characters and rejects one of 2001", () => {
+    expect(elementSchema.safeParse({ ...element, selector: "a".repeat(2000) }).success).toBe(true);
+    rejects(elementSchema, { ...element, selector: "a".repeat(2001) });
+  });
 });
 
 describe("truncateElementName", () => {

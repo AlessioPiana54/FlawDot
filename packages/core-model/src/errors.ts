@@ -37,8 +37,8 @@ export interface FlawDotErrorOptions {
 
 /**
  * The only error type that crosses a module boundary: async functions throw it, they never return
- * `null` or `{ error }` for a failure. Messages are in English, say what happened and what to do, and
- * never contain the API key.
+ * `null` or `{ error }` for a failure. Messages are in English and say what happened and what to do. A message
+ * must never be built from the API key or any other secret: the error does not scrub it, the caller does.
  */
 export class FlawDotError extends Error implements FlawDotErrorShape {
   readonly code: FlawDotErrorCode;

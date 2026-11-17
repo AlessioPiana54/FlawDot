@@ -1,6 +1,11 @@
 // SHA-256 in plain TypeScript. core-model has no I/O and must also load in the browser (the web UI imports
-// its schemas), so it cannot use `node:crypto`. Used only to give findings a stable identity, not for secrets.
+// its schemas), so it cannot use `node:crypto`. `crypto.subtle` is not an option either: it is async, and a
+// fingerprint is needed synchronously. Used only to give findings a stable identity, not for secrets.
+//
+// Arithmetic note: every sum below is of integers below 2^32 and is wrapped to 32 bits when it is stored in a
+// `Uint32Array` or shifted with `>>> 0`, which is what SHA-256 specifies.
 
+// `noUncheckedIndexedAccess` types an index read as `number | undefined`; every index used here is in range.
 const at = (array: Uint32Array, index: number): number => array[index] as number;
 
 const rotateRight = (value: number, bits: number): number =>

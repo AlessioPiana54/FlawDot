@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { describe, expect, it } from "vitest";
-import { FlawDotError, parseOrThrow } from "../src/index.js";
+import { FlawDotError, findingDraftSchema, parseOrThrow } from "../src/index.js";
 
 const schema = z.object({
   mark: z.int().positive(),
@@ -69,6 +69,25 @@ describe("parseOrThrow", () => {
     const error = failureOf(() => parseOrThrow(withSymbol, "x"));
     expect(error.code).toBe("INVALID_INPUT");
     expect(error.message).toContain("Symbol(hidden)");
+  });
+
+  it("does not echo a wrong value in the real schemas either (unions, literals, numbers)", () => {
+    const canary = "CANARY-must-not-appear";
+    const bad = {
+      category: canary,
+      severity: canary,
+      ruleKey: 12345,
+      title: canary,
+      explanation: canary,
+      fix: canary,
+      evidence: canary,
+      principle: { code: canary, label: 99 },
+      source: { kind: canary, confidence: canary },
+      location: { kind: canary },
+    };
+    const error = failureOf(() => parseOrThrow(findingDraftSchema, bad, { what: "draft" }));
+    expect(error.message).not.toContain("CANARY");
+    expect(error.message).not.toContain("12345");
   });
 
   it("keeps the Zod error as the cause for debugging", () => {

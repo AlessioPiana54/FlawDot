@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { sha256Hex } from "../src/sha256.js";
 
-// Reference values computed with the system `sha256sum` (the first three are the FIPS 180-4 examples).
+// Reference values computed with the system `sha256sum` ("abc" and the 56-character string are FIPS 180-4 examples).
 describe("sha256Hex", () => {
   it.each([
     ["", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"],

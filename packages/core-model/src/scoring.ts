@@ -1,9 +1,11 @@
 import * as z from "zod";
 import { CATEGORIES, type Category, type Severity } from "./domain.js";
+import { FlawDotError } from "./errors.js";
 import type { Finding, FindingState } from "./finding.js";
 
-// Pure functions, no state. The constants are exported so they can be tuned on real sites (SPEC-core-model).
-// Changing any of them changes every stored score: it needs the user's approval.
+// Pure functions, no state. The constants are exported so they can be tuned on real sites.
+// Scores are recomputed from the stored findings, so changing any constant changes every score shown, history
+// included: treat it as a breaking change.
 
 /** Score = 100 × e^(−penalty / SCORE_K). */
 export const SCORE_K = 40;
@@ -48,6 +50,24 @@ export function categoryPenalty(
   findings: readonly Finding[],
   states: ReadonlyMap<string, FindingState>,
 ): number {
+  // Groups are keyed by rule only, so the same rule on desktop and on mobile would count as one group and
+  // weigh too little. Mixed input is a bug in the caller: stop instead of returning a wrong number.
+  const [first] = findings;
+  if (
+    first &&
+    findings.some(
+      (f) =>
+        f.category !== first.category ||
+        f.viewport !== first.viewport ||
+        f.pageUrl !== first.pageUrl,
+    )
+  ) {
+    throw new FlawDotError(
+      "INTERNAL",
+      "categoryPenalty needs the findings of one page, one viewport and one category",
+    );
+  }
+
   const groups = new Map<string, { heaviest: number; occurrences: number }>();
   for (const finding of findings) {
     if (states.get(finding.fingerprint)?.kind === "ignored") continue;

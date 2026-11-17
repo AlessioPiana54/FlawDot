@@ -1,7 +1,8 @@
 import * as z from "zod";
 
-// ULID: 26 characters of Crockford base32, sortable by creation time. The first character is at most 7
-// because the timestamp part has 48 bits.
+// ULID: 26 characters of Crockford base32, sortable by creation time (two ids made in the same millisecond
+// sort in order only if the generator is monotonic). The first character is at most 7 because the timestamp
+// part has 48 bits.
 const ULID = /^[0-7][0-9A-HJKMNP-TV-Z]{25}$/;
 
 /** One project per site: a host name, or `localhost-<port>`. Example: "example.com", "localhost-3000". */
@@ -27,6 +28,6 @@ export const findingIdSchema = z
   .brand<"FindingId">();
 export type FindingId = z.infer<typeof findingIdSchema>;
 
-/** Set-of-marks number of an element, unique inside one capture. Starts at 1. */
+/** Set-of-marks number of an element, unique inside one capture (`captureSchema` checks it). Starts at 1. */
 export const markIdSchema = z.int().positive().brand<"MarkId">();
 export type MarkId = z.infer<typeof markIdSchema>;
