@@ -13,6 +13,7 @@ import {
   pageTargetSchema,
   projectSchema,
   runSchema,
+  truncateElementName,
   viewportSchema,
 } from "../src/index.js";
 import { capture, element, pageTarget, run } from "./fixtures.js";
@@ -153,6 +154,38 @@ describe("element", () => {
     ["an empty selector", { selector: "" }],
     ["an empty tag", { tag: "" }],
   ])("rejects %s", (_why, patch) => rejects(elementSchema, { ...element, ...patch }));
+});
+
+describe("truncateElementName", () => {
+  it("leaves a name that already fits untouched, including one of exactly 120 characters", () => {
+    expect(truncateElementName("Start free trial")).toBe("Start free trial");
+    expect(truncateElementName("a".repeat(120))).toBe("a".repeat(120));
+    expect(truncateElementName("")).toBe("");
+  });
+
+  it("cuts a longer name to 120 characters", () => {
+    expect(truncateElementName("a".repeat(500))).toBe("a".repeat(120));
+  });
+
+  it("does not leave half of an emoji at the cut", () => {
+    // The emoji takes two UTF-16 units; here its first unit would be the 120th character.
+    const split = "a".repeat(119) + "😀" + "b";
+    const cut = truncateElementName(split);
+    expect(cut).toBe("a".repeat(119));
+    expect(cut.length).toBeLessThanOrEqual(120);
+  });
+
+  it("keeps an emoji that ends exactly at the cut", () => {
+    const whole = "a".repeat(118) + "😀" + "b";
+    expect(truncateElementName(whole)).toBe("a".repeat(118) + "😀");
+  });
+
+  it("always gives a name the element schema accepts", () => {
+    for (const name of ["x".repeat(121), "😀".repeat(200), "é".repeat(121)]) {
+      const parsed = elementSchema.safeParse({ ...element, name: truncateElementName(name) });
+      expect(parsed.success, name.slice(0, 5)).toBe(true);
+    }
+  });
 });
 
 describe("capture", () => {

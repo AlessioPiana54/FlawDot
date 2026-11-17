@@ -97,6 +97,19 @@ export type Box = z.infer<typeof boxSchema>;
 
 export const ELEMENT_NAME_MAX = 120;
 
+/**
+ * Cuts an accessible name to `ELEMENT_NAME_MAX` characters, which `elementSchema` requires. The capture
+ * adapter calls this before building an `Element`: the schema rejects a long name instead of cutting it,
+ * and one long name must not fail a whole capture. Never leaves half of a surrogate pair (an emoji).
+ */
+export function truncateElementName(name: string): string {
+  if (name.length <= ELEMENT_NAME_MAX) return name;
+  const cut = name.slice(0, ELEMENT_NAME_MAX);
+  const lastUnit = cut.charCodeAt(cut.length - 1);
+  const endsInsideAPair = lastUnit >= 0xd800 && lastUnit <= 0xdbff; // a high surrogate without its low half
+  return endsInsideAPair ? cut.slice(0, -1) : cut;
+}
+
 export const elementSchema = z.object({
   mark: markIdSchema,
   selector: nonEmpty, // unique CSS selector inside the page

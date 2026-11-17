@@ -133,6 +133,10 @@ export interface FingerprintInput {
  * Stable identity of a problem across runs: the same problem on the same template gives the same value,
  * whatever the page URL. It drives "new / still open / fixed" and "ignore". Changing how it is computed
  * changes every comparison with the stored history, so that needs the user's approval.
+ *
+ * Two different elements can share a fingerprint (same tag path once positions and generated classes are
+ * removed). That follows from tying it to the template. So whoever compares runs must count occurrences per
+ * fingerprint, and "ignore" hides all of them.
  */
 export function fingerprint(input: FingerprintInput): string {
   const selector =
