@@ -2,6 +2,17 @@ import type * as z from "zod";
 import { FlawDotError, type FlawDotErrorCode } from "./errors.js";
 
 const MAX_ISSUES_IN_MESSAGE = 5;
+// Zod puts the NAME of an unknown key in its message, and that name comes from the input (an AI answer, a tool
+// call) with no limit of its own. One line is cut here so that an error cannot carry a megabyte of attacker text.
+const MAX_ISSUE_LENGTH = 200;
+
+function clip(text: string): string {
+  if (text.length <= MAX_ISSUE_LENGTH) return text;
+  const cut = text.slice(0, MAX_ISSUE_LENGTH);
+  const lastUnit = cut.charCodeAt(cut.length - 1);
+  const splitsAnEmoji = lastUnit >= 0xd800 && lastUnit <= 0xdbff; // a high surrogate without its low half
+  return `${splitsAnEmoji ? cut.slice(0, -1) : cut}…`;
+}
 
 export interface ParseOptions {
   /** Error code when the input is malformed. Default `INVALID_INPUT`; AI answers use `AI_BAD_RESPONSE`. */
@@ -29,7 +40,7 @@ export function parseOrThrow<S extends z.ZodType>(
     // A path can hold symbols, and `join` throws on those.
     const where =
       issue.path.length > 0 ? issue.path.map((part) => String(part)).join(".") : "(root)";
-    return `${where}: ${issue.message}`;
+    return clip(`${where}: ${issue.message}`);
   });
   const hidden = result.error.issues.length - shown.length;
   const more = hidden > 0 ? ` (and ${String(hidden)} more)` : "";

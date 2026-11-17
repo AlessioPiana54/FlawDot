@@ -21,7 +21,7 @@ const weight = z.number().min(0);
  * spelled out so that adding a category to `CATEGORIES` fails to compile here until the weights follow.
  */
 export const categoryWeightsSchema = z
-  .object({ ui: weight, ux: weight, accessibility: weight, conversion: weight })
+  .strictObject({ ui: weight, ux: weight, accessibility: weight, conversion: weight })
   .refine((weights) => Math.abs(Object.values(weights).reduce((a, b) => a + b, 0) - 1) < 1e-6, {
     message: "Weights must add up to 1",
   });
