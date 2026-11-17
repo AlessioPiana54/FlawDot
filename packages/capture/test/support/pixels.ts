@@ -36,3 +36,19 @@ export async function colorsAt(
     await context.close();
   }
 }
+
+/**
+ * The name of a colour as far as a test needs it: red, green, blue, white or "other". A browser may show a pure
+ * colour a little different depending on the screen profile of the system (on a Mac, #0000ff can come out as
+ * #0000c4), so a test that wants to know WHICH element is at a place compares names, not exact values.
+ */
+export function colorName(hex: string): "red" | "green" | "blue" | "white" | "other" {
+  const [r = 0, g = 0, b = 0] = [1, 3, 5].map((start) =>
+    Number.parseInt(hex.slice(start, start + 2), 16),
+  );
+  if (r >= 235 && g >= 235 && b >= 235) return "white";
+  if (r >= 140 && g <= 70 && b <= 70) return "red";
+  if (g >= 120 && r <= 70 && b <= 70) return "green";
+  if (b >= 140 && r <= 70 && g <= 70) return "blue";
+  return "other";
+}

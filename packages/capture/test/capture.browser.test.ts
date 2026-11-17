@@ -20,7 +20,7 @@ import {
   startFixtureServer,
   type FixtureServer,
 } from "./support/fixture-server.js";
-import { colorsAt } from "./support/pixels.js";
+import { colorName, colorsAt } from "./support/pixels.js";
 import {
   FIXED_NOW,
   context,
@@ -533,10 +533,7 @@ describe("the browser provider", () => {
 
 describe("the screenshot and the boxes agree", () => {
   // A circle is drawn on the screenshot from a box, so the picture must show the element where its box says.
-  const GREEN = "#00aa00";
-  const RED = "#ff0000";
-  const BLUE = "#0000ff";
-  const WHITE = "#ffffff";
+  // Colours are compared by name (see colorName): the exact value depends on the screen profile of the system.
 
   it.each([
     ["on a normal screen", desktop],
@@ -545,9 +542,9 @@ describe("the screenshot and the boxes agree", () => {
     const capture = await take("/fixed-bottom.html", { viewport });
     const scale = viewport.deviceScaleFactor;
     const checks: [string, string][] = [
-      ["#cta", GREEN],
-      ["#vh", BLUE],
-      ["#bar", RED],
+      ["#cta", "green"],
+      ["#vh", "blue"],
+      ["#bar", "red"],
     ];
     const probes = checks.flatMap(([selector]) => {
       const { x, y, width, height } = boxOf(capture, selector);
@@ -558,7 +555,9 @@ describe("the screenshot and the boxes agree", () => {
         { x: Math.max(0, x - 6) * scale, y: Math.max(0, y - 6) * scale }, // just outside the top-left corner
       ];
     });
-    const colors = await colorsAt(await provider.get(), capture.screenshot.path, probes);
+    const colors = (await colorsAt(await provider.get(), capture.screenshot.path, probes)).map(
+      colorName,
+    );
     checks.forEach(([selector, expected], index) => {
       const [middle, topLeft, bottomRight, outside] = colors.slice(index * 4, index * 4 + 4);
       expect([selector, middle, topLeft, bottomRight]).toEqual([
@@ -567,7 +566,7 @@ describe("the screenshot and the boxes agree", () => {
         expected,
         expected,
       ]);
-      expect([selector, outside]).toEqual([selector, WHITE]);
+      expect([selector, outside]).toEqual([selector, "white"]);
     });
   });
 });
