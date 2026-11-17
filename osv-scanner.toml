@@ -1,0 +1,11 @@
+# Exception E2 of docs/CONSTRAINTS.md section 7: the only advisory the dependency scan (S2) is told to ignore.
+# Read by osv-scanner in the CI security workflow, which scans this folder.
+
+[[IgnoredVulns]]
+id = "GHSA-fc5q-39xc-vjpf"
+# picomatch 4.0.7: regular expression denial of service on a crafted glob such as +(*). It is the last version
+# of picomatch and it is the one affected, so there is no fixed version to update to. It reaches the project only
+# through the development tools (vitest, vite, tinyglobby), which match the globs written in this repository, never
+# a pattern that comes from outside, so it cannot be reached. Reviewed 2026-11-17, approved by the user.
+effectiveUntil = 2026-12-17T00:00:00Z
+reason = "No fixed version exists; dev-only dependency that never receives an untrusted glob. Review by 2026-12-17."

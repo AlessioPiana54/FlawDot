@@ -177,6 +177,15 @@ const scan = (baseRef) => {
     }
   }
 
+  // E2: the one advisory of the dependency scan that is told to be ignored. Any other id added to osv-scanner.toml is a
+  // new exception, and needs the user to approve it (and to add its line here).
+  const APPROVED_OSV_IGNORES = new Set(['id = "GHSA-fc5q-39xc-vjpf"']); // E2
+  for (const l of added.filter((a) => a.file === "osv-scanner.toml")) {
+    if (/^\s*id\s*=/.test(l.text) && !APPROVED_OSV_IGNORES.has(l.text.trim())) {
+      flag("exception-added", l.file, l.text.trim());
+    }
+  }
+
   // A rule token that appears fewer times after the edit was removed or renamed away.
   const WATCHED = [
     {
