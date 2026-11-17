@@ -1,0 +1,73 @@
+name: Security
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # New advisories appear without new commits: scan weekly (Monday 06:00 UTC).
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gitleaks:
+    name: gitleaks (S1)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      # --redact: the matched value must never reach the logs.
+      - name: Scan the working tree
+        run: docker run --rm -v "$PWD:/repo:ro" zricethezav/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f dir /repo --redact --no-banner
+      - name: Scan the git history
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/repo \
+            zricethezav/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f git /repo --redact --no-banner
+
+  osv-scanner:
+    name: osv-scanner (S2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      # osv-scanner exits 0 (no findings) or 1 (findings); anything else is a tool error.
+      # quality-gate.mjs then blocks only on high/critical (CVSS >= 7.0).
+      - name: Scan the lockfile
+        run: |
+          set +e
+          docker run --rm -v "$PWD:/src:ro" ghcr.io/google/osv-scanner:v2.7.1@sha256:a70ffffc2bfd33482953e5d6b64c6fcdb30239717a07b0f0d3ab2859ce3e4cde scan source -r /src --format json > osv.json
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ] && [ "$code" -ne 1 ]; then
+            echo "osv-scanner failed with exit code $code"
+            exit 1
+          fi
+          node scripts/quality-gate.mjs osv osv.json
+
+  semgrep:
+    name: semgrep (S3)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      # Semgrep exits 0 even when it finds problems: quality-gate.mjs enforces the severity threshold.
+      # The report goes outside the workspace: with --strict, Semgrep would scan its own half-written semgrep.json (exit 3).
+      - name: Scan the code
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src semgrep/semgrep:1.185.0@sha256:67518c174185a2043fdbed16c70631b79209499b3671178e7194379b48295a0d \
+            semgrep scan --config p/default --config p/typescript --strict --json > "$RUNNER_TEMP/semgrep.json"
+          node scripts/quality-gate.mjs semgrep "$RUNNER_TEMP/semgrep.json"

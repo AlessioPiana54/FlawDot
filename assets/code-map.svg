@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 570 862" width="570" height="862" font-family="system-ui, -apple-system, Segoe UI, sans-serif" role="img" aria-label="Dependency map of the core-model modules">
+<title>core-model: which module imports which</title>
+<rect width="570" height="862" rx="10" fill="#f6f8f6"/>
+<text x="34" y="30" font-size="15" font-weight="600" fill="#1b2420">core-model: who imports whom</text>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8fa59a"/></marker></defs>
+<path d="M197.0,348.0 C197.0,387.0 285.0,387.0 285.0,426.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M197.0,696.0 C197.0,735.0 285.0,735.0 285.0,774.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M197.0,580.0 C197.0,619.0 197.0,619.0 197.0,658.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M197.0,580.0 C197.0,677.0 109.0,677.0 109.0,774.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M373.0,580.0 C373.0,619.0 197.0,619.0 197.0,658.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M373.0,580.0 C373.0,619.0 373.0,619.0 373.0,658.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M373.0,580.0 C373.0,677.0 461.0,677.0 461.0,774.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M109.0,464.0 C109.0,503.0 373.0,503.0 373.0,542.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M373.0,696.0 C373.0,735.0 109.0,735.0 109.0,774.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M285.0,116.0 C285.0,155.0 285.0,155.0 285.0,194.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M285.0,232.0 C285.0,271.0 197.0,271.0 197.0,310.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M285.0,232.0 C285.0,271.0 373.0,271.0 373.0,310.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M285.0,464.0 C285.0,503.0 373.0,503.0 373.0,542.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M461.0,464.0 C461.0,503.0 373.0,503.0 373.0,542.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<path d="M373.0,348.0 C373.0,387.0 461.0,387.0 461.0,426.0" fill="none" stroke="#8fa59a" stroke-width="1.2" marker-end="url(#a)" opacity="0.8"/>
+<rect x="122.0" y="310.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="197.0" y="334.0" font-size="14" text-anchor="middle" fill="#1b2420">ai-request.ts</text>
+<rect x="298.0" y="310.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="373.0" y="334.0" font-size="14" text-anchor="middle" fill="#1b2420">settings.ts</text>
+<rect x="122.0" y="658.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="197.0" y="682.0" font-size="14" text-anchor="middle" fill="#1b2420">domain.ts</text>
+<rect x="298.0" y="658.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="373.0" y="682.0" font-size="14" text-anchor="middle" fill="#1b2420">parse.ts</text>
+<rect x="34.0" y="774.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="109.0" y="798.0" font-size="14" text-anchor="middle" fill="#1b2420">errors.ts</text>
+<rect x="210.0" y="774.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="285.0" y="798.0" font-size="14" text-anchor="middle" fill="#1b2420">ids.ts</text>
+<rect x="386.0" y="774.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="461.0" y="798.0" font-size="14" text-anchor="middle" fill="#1b2420">sha256.ts</text>
+<rect x="122.0" y="542.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="197.0" y="566.0" font-size="14" text-anchor="middle" fill="#1b2420">events.ts</text>
+<rect x="298.0" y="542.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="373.0" y="566.0" font-size="14" text-anchor="middle" fill="#1b2420">finding.ts</text>
+<rect x="34.0" y="426.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="109.0" y="450.0" font-size="14" text-anchor="middle" fill="#1b2420">numbering.ts</text>
+<rect x="210.0" y="426.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="285.0" y="450.0" font-size="14" text-anchor="middle" fill="#1b2420">schemas.ts</text>
+<rect x="386.0" y="426.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="461.0" y="450.0" font-size="14" text-anchor="middle" fill="#1b2420">scoring.ts</text>
+<rect x="210.0" y="78.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="285.0" y="102.0" font-size="14" text-anchor="middle" fill="#1b2420">plugins.ts</text>
+<rect x="210.0" y="194.0" width="150" height="38" rx="6" fill="#ffffff" stroke="#1f4d3a" stroke-width="1.5"/><text x="285.0" y="218.0" font-size="14" text-anchor="middle" fill="#1b2420">ports.ts</text>
+<text x="34" y="836" font-size="11" fill="#5b6b63">An arrow goes from a module to one it imports.</text><text x="34" y="851" font-size="11" fill="#5b6b63">Indirect imports are omitted. Foundations are at the bottom.</text>
+</svg>

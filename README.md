@@ -29,8 +29,8 @@ This starts a local server and opens the interface in your browser. From there y
 ## Planned approach
 
 - **Capture** with Playwright: screenshots, DOM, bounding boxes and the accessibility tree.
-- **Deterministic checks** with axe-core, marked as *Verified*.
-- **AI review** with Claude vision, marked as *AI suggestion* with a confidence level. You bring your own API key,
+- **Deterministic checks** with axe-core, marked as _Verified_.
+- **AI review** with Claude vision, marked as _AI suggestion_ with a confidence level. You bring your own API key,
   which stays on your machine.
 - **Local first**: everything runs on your computer, so FlawDot can check sites on `localhost` as well as public ones.
 
@@ -38,6 +38,24 @@ This starts a local server and opens the interface in your browser. From there y
 
 The product decisions are settled. Next come the wireframes, the technical spec and the first prototype.
 Follow the repository for updates.
+
+## Code map
+
+This is how the modules of `core-model`, the shared domain package, depend on each other. The map is generated from
+the code with [graphify](https://github.com/safishamsi/graphify), and it is redrawn when the structure changes.
+
+![Dependency map of the core-model modules: plugins depends on ports, which depends on ai-request and settings, down to errors, ids and sha256](assets/code-map.svg)
+
+You can explore the whole repository the same way. The full knowledge graph is not committed (it is rebuilt locally),
+so it only exists after you generate it:
+
+```bash
+graphify . # builds graphify-out/ with GRAPH_REPORT.md, graph.html and graph.json
+graphify query "where is the finding fingerprint computed?"
+```
+
+Read `graphify-out/GRAPH_REPORT.md` first to see the main modules and how they connect, and open only the files you
+need.
 
 ## License
 

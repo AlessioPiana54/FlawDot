@@ -1,0 +1,27 @@
+{
+  "name": "flawdot-monorepo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.21.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "typecheck": "tsc -b",
+    "lint": "oxlint --type-aware --deny-warnings",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "check:fast": "pnpm typecheck && pnpm lint && pnpm format:check",
+    "check:task": "pnpm check:fast && node scripts/floor-guard.mjs && vitest run --coverage && node scripts/diff-coverage.mjs",
+    "check:full": "pnpm check:task"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "5.1.0",
+    "oxlint": "1.94.0",
+    "oxlint-tsgolint": "7.0.2007",
+    "prettier": "3.10.1",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  }
+}

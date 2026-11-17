@@ -1,0 +1,29 @@
+packages:
+  - "packages/*"
+# Supply-chain settings (Semgrep p/default checks them). Release age is 1 day, not the 7 days (10080) Semgrep suggests:
+# the pinned Vite 8.3 / rolldown / oxlint-tsgolint releases are younger than 7 days and `pnpm install` would fail. Semgrep
+# reports this as MEDIUM (non-blocking). Raise it once they age out. Also: no exotic sources, no trust downgrades.
+minimumReleaseAge: 1440
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+minimumReleaseAgeExclude:
+  - "@oxlint/binding-android-arm-eabi@1.94.0"
+  - "@oxlint/binding-android-arm64@1.94.0"
+  - "@oxlint/binding-darwin-arm64@1.94.0"
+  - "@oxlint/binding-darwin-x64@1.94.0"
+  - "@oxlint/binding-freebsd-x64@1.94.0"
+  - "@oxlint/binding-linux-arm-gnueabihf@1.94.0"
+  - "@oxlint/binding-linux-arm-musleabihf@1.94.0"
+  - "@oxlint/binding-linux-arm64-gnu@1.94.0"
+  - "@oxlint/binding-linux-arm64-musl@1.94.0"
+  - "@oxlint/binding-linux-ppc64-gnu@1.94.0"
+  - "@oxlint/binding-linux-riscv64-gnu@1.94.0"
+  - "@oxlint/binding-linux-riscv64-musl@1.94.0"
+  - "@oxlint/binding-linux-s390x-gnu@1.94.0"
+  - "@oxlint/binding-linux-x64-gnu@1.94.0"
+  - "@oxlint/binding-linux-x64-musl@1.94.0"
+  - "@oxlint/binding-openharmony-arm64@1.94.0"
+  - "@oxlint/binding-win32-arm64-msvc@1.94.0"
+  - "@oxlint/binding-win32-ia32-msvc@1.94.0"
+  - "@oxlint/binding-win32-x64-msvc@1.94.0"
+  - oxlint@1.94.0
