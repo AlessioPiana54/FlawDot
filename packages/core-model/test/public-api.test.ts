@@ -13,6 +13,7 @@ describe("public API", () => {
         "REPEAT_CAP",
         "REPEAT_STEP",
         "SCORE_K",
+        "numberFindings",
         "SELECTOR_MAX",
         "RULE_KEY_MAX",
         "PRINCIPLE_CODE_MAX",
