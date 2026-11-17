@@ -1,5 +1,11 @@
 packages:
   - "packages/*"
+# Supply-chain settings (Semgrep p/default checks them). Release age is 1 day, not the 7 days (10080) Semgrep suggests:
+# the pinned Vite 8.3 / rolldown / oxlint-tsgolint releases are younger than 7 days and `pnpm install` would fail. Semgrep
+# reports this as MEDIUM (non-blocking). Raise it once they age out. Also: no exotic sources, no trust downgrades.
+minimumReleaseAge: 1440
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
 minimumReleaseAgeExclude:
   - "@oxlint/binding-android-arm-eabi@1.94.0"
   - "@oxlint/binding-android-arm64@1.94.0"

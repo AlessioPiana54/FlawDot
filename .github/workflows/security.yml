@@ -65,8 +65,9 @@ jobs:
         with:
           node-version: 24
       # Semgrep exits 0 even when it finds problems: quality-gate.mjs enforces the severity threshold.
+      # The report goes outside the workspace: with --strict, Semgrep would scan its own half-written semgrep.json (exit 3).
       - name: Scan the code
         run: |
           docker run --rm -v "$PWD:/src" -w /src semgrep/semgrep:1.185.0 \
-            semgrep scan --config p/default --config p/typescript --strict --json > semgrep.json
-          node scripts/quality-gate.mjs semgrep semgrep.json
+            semgrep scan --config p/default --config p/typescript --strict --json > "$RUNNER_TEMP/semgrep.json"
+          node scripts/quality-gate.mjs semgrep "$RUNNER_TEMP/semgrep.json"

@@ -126,11 +126,13 @@ const scan = (baseRef) => {
 
   // Rule 6: thresholds and rules in the TRACKED config files (CONSTRAINTS §1). docs/ is not in git,
   // so the numbers live in these files and this is where a loosening shows up.
+  // Fixed regex (no RegExp built from a variable): the key is matched in group 1 and filtered after.
+  const THRESHOLD = /\b(lines|branches|functions|statements)\s*:\s*(\d+(?:\.\d+)?)/;
   const nums = (lines, key) =>
     lines
-      .map((l) => new RegExp(`\\b${key}\\s*:\\s*(\\d+(?:\\.\\d+)?)`).exec(l.text))
-      .filter(Boolean)
-      .map((m) => Number(m[1]));
+      .map((l) => THRESHOLD.exec(l.text))
+      .filter((m) => m && m[1] === key)
+      .map((m) => Number(m[2]));
   const configFiles = new Set(
     [...added, ...removed]
       .map((l) => l.file)
