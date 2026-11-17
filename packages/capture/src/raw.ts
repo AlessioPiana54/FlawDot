@@ -63,6 +63,48 @@ function parseElement(value: unknown): RawElement | null {
   };
 }
 
+/** The largest size taken for a page: no real page is bigger, and a page can claim any number. */
+const PAGE_SIZE_MAX = 10_000_000;
+
+/** What the script measured about the page as a whole. */
+export interface PageMetrics {
+  /** CSS pixels: the width and the height of the whole document. */
+  width: number;
+  height: number;
+  /** True when the script stopped at its limit before it saw every element, so a count of elements is a minimum. */
+  scanStopped: boolean;
+}
+
+/**
+ * The size of the page and whether the scan stopped early. A size that is not a number of at least 1 pixel means
+ * the script did not run as written: that is an error, not a page to guess for.
+ */
+export function parsePageMetrics(input: unknown): PageMetrics {
+  const unexpected = new FlawDotError(
+    "INTERNAL",
+    "The page returned data that the capture script did not expect.",
+  );
+  if (!isRecord(input)) throw unexpected;
+  const { pageWidth, pageHeight, reachedMax } = input;
+  if (!isNumber(pageWidth) || !isNumber(pageHeight) || pageWidth < 1 || pageHeight < 1) {
+    throw unexpected;
+  }
+  return {
+    width: Math.min(Math.ceil(pageWidth), PAGE_SIZE_MAX),
+    height: Math.min(Math.ceil(pageHeight), PAGE_SIZE_MAX),
+    scanStopped: reachedMax === true,
+  };
+}
+
+/** Cuts text to `max` characters, without half of an emoji at the end: text from a page is cut, not refused. */
+export function cutText(text: string, max: number): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastUnit = cut.charCodeAt(cut.length - 1);
+  const endsInsideAPair = lastUnit >= 0xd800 && lastUnit <= 0xdbff;
+  return endsInsideAPair ? cut.slice(0, -1) : cut;
+}
+
 export function parseRawPage(input: unknown): RawPage {
   if (!isRecord(input) || !Array.isArray(input["elements"])) {
     throw new FlawDotError(

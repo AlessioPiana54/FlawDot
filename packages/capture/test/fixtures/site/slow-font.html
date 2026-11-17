@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Slow font</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 400px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="ok" class="abs" style="left: 10px; top: 10px; width: 100px; height: 30px">
+      ok
+    </button>
+    <script>
+      // The font is asked for after the page has loaded, and never arrives.
+      window.addEventListener("load", () => {
+        const font = new FontFace("Slow", 'url("/__hang")');
+        document.fonts.add(font);
+        font.load().catch(() => undefined);
+      });
+    </script>
+  </body>
+</html>

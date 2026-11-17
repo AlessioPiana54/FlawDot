@@ -1,6 +1,4 @@
 import { createHash } from "node:crypto";
-import { copyFile, mkdir } from "node:fs/promises";
-import { dirname } from "node:path";
 import type { Browser, BrowserContext, Page } from "playwright-core";
 import {
   FlawDotError,
@@ -18,10 +16,15 @@ import {
 import type { BrowserProvider } from "./browser-provider.js";
 import { measureBox } from "./in-page/measure.js";
 import { collectCandidates } from "./in-page/collect.js";
-import { NAVIGATION_TIMEOUT_MS, stalled, toFlawDotError } from "./navigation-errors.js";
+import { createGuard } from "./guard.js";
+import { readAriaSnapshot } from "./aria.js";
+import { shootMarked } from "./marked.js";
+import { NAVIGATION_TIMEOUT_MS, toFlawDotError } from "./navigation-errors.js";
 import { pngSize } from "./png.js";
-import { RAW_MAX, parseRawPage } from "./raw.js";
-import { numberElements } from "./set-of-marks.js";
+import { RAW_MAX, parsePageMetrics, parseRawPage } from "./raw.js";
+import { dropOutsideCut, numberElements, usableElements } from "./set-of-marks.js";
+import { QUIET_NETWORK_MS, stabilize } from "./stabilize.js";
+import { buildTruncation, maxCutHeight, maxCutWidth } from "./tiles.js";
 
 export interface UrlCaptureDeps {
   browser: BrowserProvider;
@@ -29,34 +32,8 @@ export interface UrlCaptureDeps {
   clock: Clock;
   /** How long to wait for a page to load. Only tests change it, to check the timeout without waiting 30 s. */
   navigationTimeoutMs?: number;
-}
-
-/** A font that never answers must not hold the capture: it waits for the fonts, but not for long. */
-const FONTS_WAIT_MS = 2_000;
-
-// Stops what moves while the page is measured and photographed.
-const STILL = [
-  "*,*::before,*::after{",
-  "animation:none!important;",
-  "transition:none!important;",
-  "caret-color:transparent!important;",
-  "scroll-behavior:auto!important}",
-].join("");
-
-/**
- * Playwright puts a time limit on its own calls, but `page.evaluate` waits for as long as the page takes: a page
- * whose script never ends would hold the capture for ever. So every wait on the page has a deadline.
- */
-async function within<T>(work: Promise<T>, ms: number, url: string): Promise<T> {
-  let timer: NodeJS.Timeout | undefined;
-  const expired = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => reject(stalled(url)), ms);
-  });
-  try {
-    return await Promise.race([work, expired]);
-  } finally {
-    clearTimeout(timer);
-  }
+  /** How long to wait for the network to go quiet. Only tests change it, for a page that never does. */
+  quietNetworkMs?: number;
 }
 
 /** The files of one capture share a name that cannot hold a character from the URL: it is a hash of it. */
@@ -114,19 +91,7 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
 
   return {
     async capture(pageTarget, viewport, ctx, signal, onLive) {
-      const guard = <T>(work: Promise<T>): Promise<T> => within(work, timeout, pageTarget.url);
-
-      /** Gets the page ready to be measured: nothing moving, fonts loaded, scrolled back to the top. */
-      const prepare = async (page: Page): Promise<void> => {
-        await guard(page.addStyleTag({ content: STILL }));
-        await guard(
-          page.evaluate(
-            `Promise.race([document.fonts.ready, new Promise((done) => setTimeout(done, ${String(FONTS_WAIT_MS)}))]).then(() => undefined)`,
-          ),
-        );
-        // Boxes are measured from the top of the page, so a page that scrolled itself must be brought back.
-        await guard(page.evaluate("window.scrollTo(0, 0)"));
-      };
+      const guard = createGuard(pageTarget.url, timeout);
 
       /** A page that is still open, for the analyzers that need it (axe). It is valid only while `onLive` runs. */
       const liveFor = (page: Page): LivePage => ({
@@ -145,29 +110,57 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
           browserContext.setDefaultTimeout(timeout);
           const page = await browserContext.newPage();
           await page.goto(pageTarget.url, { timeout, waitUntil: "load" });
-          await prepare(page);
+          // The picture is never taller than the user allows, nor than the browser can draw at this pixel ratio.
+          const maxCut = maxCutHeight(ctx.limits, viewport.deviceScaleFactor);
+          await stabilize(page, {
+            guard,
+            quietNetworkMs: deps.quietNetworkMs ?? QUIET_NETWORK_MS,
+            screenHeight: viewport.height,
+            limitHeight: maxCut,
+          });
 
-          const found = parseRawPage(
-            await guard(
-              page.evaluate(collectCandidates, { max: RAW_MAX, selectorMax: SELECTOR_MAX }),
-            ),
+          const reported = await guard(
+            page.evaluate(collectCandidates, { max: RAW_MAX, selectorMax: SELECTOR_MAX }),
           );
-          const elements = numberElements(found.elements, ctx.limits.maxElements);
+          const found = parseRawPage(reported);
+          const metrics = parsePageMetrics(reported);
+          const keptHeight = Math.min(metrics.height, maxCut);
+          const width = Math.min(metrics.width, maxCutWidth(viewport.deviceScaleFactor));
+          // What the picture does not show gets no number, and takes no place of the cap.
+          const inPicture = dropOutsideCut(found.elements, { width, height: keptHeight });
+          const elements = numberElements(inPicture, ctx.limits.maxElements);
+          const truncation = buildTruncation({
+            found: usableElements(inPicture).length,
+            kept: elements.length,
+            scanStopped: metrics.scanStopped,
+            fullHeight: metrics.height,
+            keptHeight,
+          });
 
           const name = fileNameFor(pageTarget.url, viewport);
           const screenshotPath = deps.artifacts.pathFor(ctx.runId, "screenshot", name);
-          const picture = await page.screenshot({
-            path: screenshotPath,
-            fullPage: true,
-            animations: "disabled",
-            scale: "device",
-          });
+          const picture = await guard(
+            page.screenshot({
+              path: screenshotPath,
+              fullPage: true,
+              clip: { x: 0, y: 0, width, height: keptHeight },
+              animations: "disabled",
+              scale: "device",
+            }),
+          );
           const size = pngSize(picture);
 
-          // The marked screenshot is made in a later step; until then it is a copy of the plain one.
-          const markedPath = deps.artifacts.pathFor(ctx.runId, "marked", name);
-          await mkdir(dirname(markedPath), { recursive: true });
-          await copyFile(screenshotPath, markedPath);
+          const { marked, tiles } = await shootMarked(page, {
+            elements,
+            width,
+            keptHeight,
+            screenHeight: viewport.height,
+            markedPath: deps.artifacts.pathFor(ctx.runId, "marked", name),
+            tilePathFor: (index) =>
+              deps.artifacts.pathFor(ctx.runId, "tile", `${name}__t${String(index)}`),
+            guard,
+          });
+          const ariaSnapshot = await readAriaSnapshot(page, timeout);
 
           const capture = parseOrThrow(
             captureSchema,
@@ -176,9 +169,12 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
               page: pageTarget,
               viewport,
               screenshot: { path: screenshotPath, ...size },
-              marked: { path: markedPath },
+              marked,
+              tiles,
               elements,
               title: found.title,
+              ...(ariaSnapshot === undefined ? {} : { ariaSnapshot }),
+              ...(truncation === undefined ? {} : { truncation }),
               capturedAt: deps.clock.now().toISOString(),
             },
             { code: "INTERNAL", what: "capture" },

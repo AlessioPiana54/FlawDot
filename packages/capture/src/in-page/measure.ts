@@ -8,7 +8,7 @@ import type { Box } from "@flawdot/core-model";
 export function measureBox(selector: string): Box | null {
   let element: Element | null;
   try {
-    element = document.querySelector(selector);
+    element = Document.prototype.querySelector.call(document, selector);
   } catch {
     return null; // not a valid selector, so it matches nothing
   }

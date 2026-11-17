@@ -24,6 +24,7 @@ export function tempArtifacts(): ArtifactStore & { root: string; dispose(): void
     marked: "marked.png",
     annotated: "annotated.png",
     export: "bin",
+    tile: "tile.png",
   };
   return {
     root,
@@ -67,4 +68,15 @@ export async function rejectionOf(promise: Promise<unknown>): Promise<unknown> {
     return error;
   }
   throw new Error("Expected the promise to reject, and it resolved");
+}
+
+/** The first bytes of a PNG of a size: enough for a program that reads only the size from the header. */
+export function pngBytes(width: number, height: number): Buffer {
+  const bytes = Buffer.alloc(33);
+  Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(bytes, 0);
+  bytes.writeUInt32BE(13, 8);
+  bytes.write("IHDR", 12, "ascii");
+  bytes.writeUInt32BE(width, 16);
+  bytes.writeUInt32BE(height, 20);
+  return bytes;
 }

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Banner</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 2000px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      html,
+      body {
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="cta" class="abs" style="left: 40px; top: 300px; width: 180px; height: 48px">
+      Buy now
+    </button>
+    <div
+      id="onetrust-banner-sdk"
+      style="
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 120px;
+        background: #222;
+        color: #fff;
+      "
+    >
+      <button
+        id="accept"
+        style="margin: 20px"
+        onclick="
+          window.__clicked = true;
+          fetch('/__clicked');
+        "
+      >
+        Accept all
+      </button>
+    </div>
+    <div
+      id="it-banner"
+      style="position: fixed; top: 0; left: 0; width: 600px; height: 100px; background: #eee"
+    >
+      <p style="margin: 0">Utilizziamo i cookie per migliorare la tua esperienza.</p>
+      <button
+        id="it-accept"
+        onclick="
+          window.__clicked = true;
+          fetch('/__clicked');
+        "
+      >
+        Accetta
+      </button>
+      <button id="it-reject">Rifiuta</button>
+    </div>
+    <div
+      id="en-banner"
+      role="dialog"
+      style="
+        position: fixed;
+        bottom: 200px;
+        right: 0;
+        width: 400px;
+        height: 100px;
+        background: #ddd;
+      "
+    >
+      <p style="margin: 0">We use cookies to give you the best experience.</p>
+      <a
+        id="en-accept"
+        href="#"
+        onclick="
+          window.__clicked = true;
+          fetch('/__clicked');
+        "
+        >Accept all cookies</a
+      >
+    </div>
+    <div
+      id="promo"
+      style="position: fixed; top: 150px; right: 0; width: 300px; height: 60px; background: #ffd"
+    >
+      <span>Subscribe to our newsletter</span>
+      <button id="subscribe">Subscribe</button>
+    </div>
+    <header
+      id="site-header"
+      style="position: fixed; top: 700px; left: 0; width: 500px; height: 50px; background: #eef"
+    >
+      <a id="cookie-settings" href="/cookies">Cookie settings</a>
+      <a id="allow-link" href="#">Allow</a>
+    </header>
+    <div
+      id="site-menu"
+      style="position: fixed; top: 780px; left: 0; width: 500px; height: 50px; background: #efe"
+    >
+      <nav>
+        <a id="menu-cookie-settings" href="/cookies">Cookie settings</a>
+        <a id="menu-allow" href="#">Allow</a>
+      </nav>
+    </div>
+    <div
+      id="notice"
+      style="position: fixed; top: 500px; right: 0; width: 300px; height: 60px; background: #fdd"
+    >
+      <span>We use cookies in our recipes, and so can you.</span>
+      <a id="notice-link" href="/recipes">Read the recipes</a>
+    </div>
+    <div
+      id="recipes"
+      style="position: fixed; top: 400px; right: 0; width: 300px; height: 60px; background: #dfd"
+    >
+      <span>Cookie recipes</span>
+      <a id="recipes-link" href="/recipes">All recipes</a>
+    </div>
+  </body>
+</html>

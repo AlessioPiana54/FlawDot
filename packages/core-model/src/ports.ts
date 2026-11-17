@@ -79,14 +79,15 @@ export interface Annotator {
  * Where files go. It only hands out paths: whoever makes a file (Playwright, sharp) writes it there. It is a port
  * of core-model, and not of the storage module, because capture, annotation, exporters and the web server all use it.
  *
- * `name` is a base name with no extension: the store adds the one of the kind ("png", "marked.png", "annotated.png").
- * So the screenshot, the marked screenshot and the annotated one of a page share one `name`, and a caller never has to
- * know how a store spells an extension.
+ * `name` is a base name with no extension: the store adds the one of the kind ("png", "marked.png", "annotated.png",
+ * "tile.png"). So the screenshot, the marked screenshot and the annotated one of a page share one `name`, and a caller
+ * never has to know how a store spells an extension. A tile has the name of its page with the number of the tile
+ * added ("<name>__t3"), so the tiles of a page are told apart by the name and not by a second argument.
  */
 export interface ArtifactStore {
   pathFor(
     runId: RunId,
-    kind: "screenshot" | "marked" | "annotated" | "export",
+    kind: "screenshot" | "marked" | "annotated" | "export" | "tile",
     name: string,
   ): string;
   /** Where the saved login session of a project lives. */

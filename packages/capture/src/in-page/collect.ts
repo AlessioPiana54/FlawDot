@@ -17,6 +17,11 @@ export interface CollectArgument {
 export interface CollectResult {
   elements: RawElement[];
   title: string;
+  /** CSS pixels: the size of the whole document, which is the size of the full-page picture. */
+  pageWidth: number;
+  pageHeight: number;
+  /** True when the scan stopped at `max` before it had looked at every element of the page. */
+  reachedMax: boolean;
 }
 
 export function collectCandidates(argument: CollectArgument): CollectResult {
@@ -248,7 +253,12 @@ export function collectCandidates(argument: CollectArgument): CollectResult {
   const elements: RawElement[] = [];
   // `body *`, and not `document.body`, which a page can replace with `<img name="body">`.
   const all = Array.from(queryAll("body *"));
-  for (let domIndex = 0; domIndex < all.length && elements.length < argument.max; domIndex += 1) {
+  let reachedMax = false;
+  for (let domIndex = 0; domIndex < all.length; domIndex += 1) {
+    if (elements.length >= argument.max) {
+      reachedMax = true; // there is at least one more element that was not looked at
+      break;
+    }
     const element = all[domIndex];
     if (element === undefined) continue;
     try {
@@ -260,5 +270,21 @@ export function collectCandidates(argument: CollectArgument): CollectResult {
       continue;
     }
   }
-  return { elements, title: document.title };
+  // The size of the whole document is the size of the full-page picture. It is read from the root element through
+  // the prototype route, so a page cannot replace it.
+  // `document.title` can be covered by an element named "title", so the getter comes from the prototype.
+  const titleOf = (): string => {
+    const value: unknown = Object.getOwnPropertyDescriptor(Document.prototype, "title")?.get?.call(
+      document,
+    );
+    return typeof value === "string" ? value : "";
+  };
+  const root = queryAll(":root")[0];
+  return {
+    elements,
+    title: titleOf(),
+    pageWidth: root?.scrollWidth ?? 0,
+    pageHeight: root?.scrollHeight ?? 0,
+    reachedMax,
+  };
 }

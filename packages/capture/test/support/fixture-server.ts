@@ -1,6 +1,6 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { readFile } from "node:fs/promises";
-import { dirname, join, resolve, sep } from "node:path";
+import { dirname, extname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../fixtures/site");
@@ -16,6 +16,16 @@ export interface FixtureServer {
 /** A page that never answers: it is how a test makes a navigation time out. */
 export const HANG_PATH = "/__hang";
 
+const CONTENT_TYPES: Readonly<Record<string, string>> = {
+  ".html": "text/html; charset=utf-8",
+  ".svg": "image/svg+xml",
+};
+
+/** The type of a file by its extension; a browser will not draw an image that is served as text. */
+function contentTypeOf(path: string): string {
+  return CONTENT_TYPES[extname(path)] ?? "application/octet-stream";
+}
+
 async function serveFile(request: IncomingMessage, response: ServerResponse): Promise<void> {
   const path = new URL(request.url ?? "/", "http://127.0.0.1").pathname;
   const target = resolve(join(ROOT, decodeURIComponent(path)));
@@ -26,7 +36,7 @@ async function serveFile(request: IncomingMessage, response: ServerResponse): Pr
   }
   try {
     const body = await readFile(target);
-    response.writeHead(200, { "content-type": "text/html; charset=utf-8" }).end(body);
+    response.writeHead(200, { "content-type": contentTypeOf(target) }).end(body);
   } catch (error) {
     response.writeHead(error instanceof Error && "code" in error ? 404 : 500).end();
   }

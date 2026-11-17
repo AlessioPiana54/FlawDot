@@ -75,15 +75,11 @@ function cleanName(name: string | null): string | null {
 }
 
 /**
- * Turns what the page reported into the elements of a capture, in three steps that always run in this order:
- * choose (drop what cannot be used, and what does not fit in `maxElements`, least important first), order (reading
- * order) and number (1 to N with no gap). The cap is part of the sequence from the start, so a page under the cap
- * gets the same numbers whether the cap is on or off.
- *
- * Whatever order the records arrive in, the result is the same.
+ * The records that can become an element: a usable selector and box, one record per place in the document and
+ * one per selector. Position in the document decides which of two records for the same place or the same
+ * selector survives. How many of these there are, not how many records, is how many elements a page has.
  */
-export function numberElements(raw: readonly RawElement[], maxElements: number): Element[] {
-  // Position in the document decides which of two records for the same place or the same selector survives.
+export function usableElements(raw: readonly RawElement[]): RawElement[] {
   const seenIndexes = new Set<number>();
   const seenSelectors = new Set<string>();
   const usable: RawElement[] = [];
@@ -93,7 +89,31 @@ export function numberElements(raw: readonly RawElement[], maxElements: number):
     seenSelectors.add(element.selector);
     usable.push(element);
   }
+  return usable;
+}
 
+/**
+ * Leaves out what the picture does not show: an element whose box starts at or below the cut, or at or beyond the
+ * right edge of the picture. An element that crosses the cut stays: part of it is in the picture. This runs before
+ * the cap, so an element that is not in the picture never takes a number or a place of the cap.
+ */
+export function dropOutsideCut<T extends { box: Box }>(
+  raw: readonly T[],
+  cut: { width: number; height: number },
+): T[] {
+  return raw.filter(({ box }) => box.y < cut.height && box.x < cut.width);
+}
+
+/**
+ * Turns what the page reported into the elements of a capture, in three steps that always run in this order:
+ * choose (drop what cannot be used, and what does not fit in `maxElements`, least important first), order (reading
+ * order) and number (1 to N with no gap). The cap is part of the sequence from the start, so a page under the cap
+ * gets the same numbers whether the cap is on or off.
+ *
+ * Whatever order the records arrive in, the result is the same.
+ */
+export function numberElements(raw: readonly RawElement[], maxElements: number): Element[] {
+  const usable = usableElements(raw);
   const kept = usable.length > maxElements ? usable.sort(byPriority).slice(0, maxElements) : usable;
 
   return kept.sort(byReadingOrder).map((element, index): Element => ({

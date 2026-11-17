@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Lazy</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 6500px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <img
+      id="img-a"
+      class="abs"
+      alt="First lazy image"
+      loading="lazy"
+      src="/img/lazy-a.svg"
+      width="200"
+      height="100"
+      style="left: 40px; top: 6000px"
+    />
+    <img
+      id="img-b"
+      class="abs"
+      alt="Second lazy image"
+      data-src="/img/lazy-b.svg"
+      width="200"
+      height="100"
+      style="left: 300px; top: 6200px"
+    />
+    <img
+      id="img-c"
+      class="abs"
+      alt="Third lazy image"
+      data-src="/img/lazy-b.svg"
+      width="200"
+      height="100"
+      style="left: 560px; top: 3000px"
+    />
+    <script>
+      // The second image is only given its source when it comes into view.
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.src = entry.target.dataset.src;
+            observer.unobserve(entry.target);
+          }
+        }
+      });
+      observer.observe(document.getElementById("img-b"));
+      observer.observe(document.getElementById("img-c"));
+    </script>
+  </body>
+</html>

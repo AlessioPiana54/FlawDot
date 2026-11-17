@@ -110,10 +110,11 @@ describe("a capture of a page with a fixed header", () => {
     expect(existsSync(capture.screenshot.path)).toBe(true);
     expect(existsSync(capture.marked.path)).toBe(true);
     expect(capture.marked.path).not.toBe(capture.screenshot.path);
-    // Until the marked screenshot exists, it is a copy of the screenshot.
+    // The marked picture is not a copy: it has the numbers on it (their pixels are checked in capture-marked).
     expect(readFileSync(capture.marked.path).equals(readFileSync(capture.screenshot.path))).toBe(
-      true,
+      false,
     );
+    expect(capture.tiles?.length).toBeGreaterThan(1);
   });
 
   it("reports the box of a known button where the page puts it, within 1 px", async () => {
