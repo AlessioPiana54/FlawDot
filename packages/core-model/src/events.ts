@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { runStatusSchema, viewportNameSchema } from "./domain.js";
+import { httpUrlSchema, runStatusSchema, viewportNameSchema } from "./domain.js";
 import { flawDotErrorShapeSchema } from "./errors.js";
 import { runIdSchema } from "./ids.js";
 
@@ -9,7 +9,7 @@ export type Phase = z.infer<typeof phaseSchema>;
 
 const pageStep = {
   runId: runIdSchema,
-  url: z.url({ protocol: /^https?$/ }),
+  url: httpUrlSchema,
   viewport: viewportNameSchema,
 };
 

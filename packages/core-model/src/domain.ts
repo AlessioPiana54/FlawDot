@@ -7,6 +7,9 @@ import { markIdSchema, projectIdSchema, runIdSchema } from "./ids.js";
 const isoDateTime = z.iso.datetime();
 const nonEmpty = z.string().min(1);
 
+/** http(s) URLs only: a file:, ftp: or javascript: URL is never a page we analyze. */
+export const httpUrlSchema = z.url({ protocol: /^https?$/ });
+
 export const VIEWPORT_NAMES = ["desktop", "tablet", "mobile"] as const;
 export const viewportNameSchema = z.enum(VIEWPORT_NAMES);
 export type ViewportName = z.infer<typeof viewportNameSchema>;
@@ -53,13 +56,13 @@ export type AiMode = z.infer<typeof aiModeSchema>;
 
 export const projectSchema = z.object({
   id: projectIdSchema,
-  origin: z.url({ protocol: /^https?$/ }), // "http://localhost:3000"
+  origin: httpUrlSchema, // "http://localhost:3000"
   createdAt: isoDateTime,
 });
 export type Project = z.infer<typeof projectSchema>;
 
 export const pageTargetSchema = z.object({
-  url: z.url({ protocol: /^https?$/ }),
+  url: httpUrlSchema,
   templateKey: nonEmpty, // "/blog/:slug", or the path itself for a single page
   templateSize: z.int().positive(), // pages in the group (1 when alone)
 });

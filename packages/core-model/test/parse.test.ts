@@ -64,6 +64,13 @@ describe("parseOrThrow", () => {
     expect(error.toShape().message).not.toContain(secret);
   });
 
+  it("does not choke on a path that holds a symbol", () => {
+    const withSymbol = z.string().refine(() => false, { path: [Symbol("hidden")] });
+    const error = failureOf(() => parseOrThrow(withSymbol, "x"));
+    expect(error.code).toBe("INVALID_INPUT");
+    expect(error.message).toContain("Symbol(hidden)");
+  });
+
   it("keeps the Zod error as the cause for debugging", () => {
     const error = failureOf(() => parseOrThrow(schema, {}));
     expect(error.cause).toBeInstanceOf(z.ZodError);

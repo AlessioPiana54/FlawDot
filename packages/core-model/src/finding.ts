@@ -2,6 +2,7 @@ import * as z from "zod";
 import {
   boxSchema,
   categorySchema,
+  httpUrlSchema,
   reportLanguageSchema,
   severitySchema,
   viewportNameSchema,
@@ -70,7 +71,7 @@ export type FindingDraft = z.infer<typeof findingDraftSchema>;
 export const findingSchema = findingDraftSchema.extend({
   id: findingIdSchema,
   runId: runIdSchema,
-  pageUrl: z.url({ protocol: /^https?$/ }),
+  pageUrl: httpUrlSchema,
   templateKey: nonEmpty,
   viewport: viewportNameSchema,
   // The circle number. `toFinding` leaves it null: numbering needs every finding of the page and viewport.
@@ -101,7 +102,7 @@ export type Comparison = z.infer<typeof comparisonSchema>;
 const GENERATED_CLASS = [
   /^(?:css|sc|jsx|emotion|styled|svelte|astro)-[A-Za-z0-9]{4,}$/,
   /__[A-Za-z0-9_-]{5,}$/,
-  /^[A-Za-z]+-[0-9a-f]{6,}$/,
+  /^(?=.*\d)[A-Za-z]+-[0-9a-f]{6,}$/, // needs a digit: "btn-decade" is a real name, "a-3fa9c1d" is a hash
 ];
 const NTH_PSEUDO = /:nth-(?:last-)?(?:child|of-type)\([^)]*\)/g;
 const CLASS_TOKEN = /\.((?:\\.|[A-Za-z0-9_-])+)/g;

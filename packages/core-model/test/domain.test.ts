@@ -141,6 +141,13 @@ describe("element", () => {
     rejects(elementSchema, { ...element, name: "a".repeat(ELEMENT_NAME_MAX + 1) });
   });
 
+  // Literal numbers on purpose: the spec says 120, so changing the constant must break this test.
+  it("cuts the accessible name at 120 characters, as the spec says", () => {
+    expect(ELEMENT_NAME_MAX).toBe(120);
+    expect(elementSchema.safeParse({ ...element, name: "a".repeat(120) }).success).toBe(true);
+    rejects(elementSchema, { ...element, name: "a".repeat(121) });
+  });
+
   it.each([
     ["mark 0", { mark: 0 }],
     ["an empty selector", { selector: "" }],

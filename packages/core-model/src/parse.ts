@@ -25,7 +25,9 @@ export function parseOrThrow<S extends z.ZodType>(
 
   const { code = "INVALID_INPUT", what = "input" } = options;
   const shown = result.error.issues.slice(0, MAX_ISSUES_IN_MESSAGE).map((issue) => {
-    const where = issue.path.length > 0 ? issue.path.join(".") : "(root)";
+    // A path can hold symbols, and `join` throws on those.
+    const where =
+      issue.path.length > 0 ? issue.path.map((part) => String(part)).join(".") : "(root)";
     return `${where}: ${issue.message}`;
   });
   const hidden = result.error.issues.length - shown.length;

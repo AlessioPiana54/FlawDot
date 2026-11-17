@@ -85,6 +85,8 @@ describe("normalizeSelector", () => {
     "#__next > main",
     "a[href='/pricing']",
     "p.css-x", // too short to be a hash
+    "a.btn-decade", // looks like hex but has no digit: a real class name
+    "a.bg-cafebabe",
   ])("keeps a selector that is stable: %s", (selector) => {
     expect(normalizeSelector(selector)).toBe(selector);
   });
@@ -141,8 +143,17 @@ describe("fingerprint", () => {
   });
 
   it("does not mix up neighbouring parts (the separator is not part of the text)", () => {
-    const a = fingerprint({ ...base, templateKey: "/a", ruleKey: "bc" });
-    const b = fingerprint({ ...base, templateKey: "/ab", ruleKey: "c" });
+    // The rule key and the selector are neighbours in the hashed text: "a"+"bc" must differ from "ab"+"c".
+    const a = fingerprint({
+      ...base,
+      ruleKey: "a",
+      location: { ...elementLocation, selector: "bc" },
+    });
+    const b = fingerprint({
+      ...base,
+      ruleKey: "ab",
+      location: { ...elementLocation, selector: "c" },
+    });
     expect(a).not.toBe(b);
   });
 });

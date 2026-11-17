@@ -8,6 +8,19 @@ describe("public API", () => {
   it("exports the runtime values the other packages rely on", () => {
     expect(Object.keys(api).sort()).toEqual(
       [
+        "DEFAULT_WEIGHTS",
+        "PENALTY",
+        "REPEAT_CAP",
+        "REPEAT_STEP",
+        "SCORE_K",
+        "httpUrlSchema",
+        "band",
+        "categoryPenalty",
+        "categoryScore",
+        "categoryWeightsSchema",
+        "findingWeight",
+        "pageScore",
+        "siteScore",
         "AI_TIERS",
         "CATEGORIES",
         "COMPARISONS",
