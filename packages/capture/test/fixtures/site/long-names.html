@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Long names</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 600px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      id="long"
+      class="abs"
+      style="left: 10px; top: 10px; width: 300px; height: 30px"
+    ></button>
+    <button id="label" class="abs" style="left: 10px; top: 60px; width: 300px; height: 30px">
+      x
+    </button>
+    <h2 id="emoji" class="abs" style="left: 10px; top: 110px; width: 600px; height: 30px"></h2>
+    <button id="jp" class="abs" style="left: 10px; top: 160px; width: 300px; height: 30px">
+      日本語のボタン
+    </button>
+    <script>
+      document.getElementById("long").textContent = "x".repeat(500);
+      document.getElementById("label").setAttribute("aria-label", "y".repeat(300));
+      document.getElementById("emoji").textContent = "a".repeat(119) + "😀" + "tail";
+    </script>
+  </body>
+</html>

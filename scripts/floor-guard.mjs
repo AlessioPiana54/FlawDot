@@ -158,6 +158,25 @@ const scan = (baseRef) => {
     }
   }
 
+  // Exceptions of docs/CONSTRAINTS.md section 7 that are written in these files. Each is the exact text the user
+  // approved: a new "exclude" in the coverage configuration, or a different EXCLUDED pattern in diff-coverage, is
+  // a new exception and needs the user to approve it (and to add its line here).
+  const APPROVED_COVERAGE_EXCLUDE = 'exclude: ["packages/capture/src/in-page/**"],'; // E1
+  const APPROVED_DIFF_EXCLUDED =
+    "const EXCLUDED = /^packages\\/(kernel|core-model)\\/|^packages\\/capture\\/src\\/in-page\\//;"; // E1
+  for (const f of configFiles) {
+    for (const l of added.filter((a) => a.file === f)) {
+      if (/\bexclude\s*:/.test(l.text) && l.text.trim() !== APPROVED_COVERAGE_EXCLUDE) {
+        flag("exception-added", f, l.text.trim());
+      }
+    }
+  }
+  for (const l of added.filter((a) => a.file === "scripts/diff-coverage.mjs")) {
+    if (l.text.includes("const EXCLUDED") && l.text.trim() !== APPROVED_DIFF_EXCLUDED) {
+      flag("exception-added", l.file, l.text.trim());
+    }
+  }
+
   // A rule token that appears fewer times after the edit was removed or renamed away.
   const WATCHED = [
     {

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Busy</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 400px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="ok" class="abs" style="left: 10px; top: 10px; width: 100px; height: 30px">
+      ok
+    </button>
+    <script>
+      // As soon as it has loaded, the page never gives the browser back its main thread.
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          for (;;) {}
+        }, 0);
+      });
+    </script>
+  </body>
+</html>

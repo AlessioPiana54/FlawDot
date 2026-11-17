@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Clobbered</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 400px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <img
+      name="querySelectorAll"
+      alt=""
+      width="12"
+      height="12"
+      class="abs"
+      style="left: 300px; top: 10px"
+    />
+    <img
+      name="getElementById"
+      alt=""
+      width="12"
+      height="12"
+      class="abs"
+      style="left: 330px; top: 10px"
+    />
+    <form>
+      <input name="matches" class="abs" style="left: 10px; top: 60px; width: 100px; height: 24px" />
+    </form>
+    <span id="lab">Named by a label</span>
+    <button
+      id="ok"
+      class="abs"
+      aria-labelledby="lab"
+      style="left: 10px; top: 100px; width: 120px; height: 30px"
+    >
+      ok
+    </button>
+    <button id="plain" class="abs" style="left: 10px; top: 140px; width: 120px; height: 30px">
+      plain
+    </button>
+  </body>
+</html>

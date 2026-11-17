@@ -43,7 +43,9 @@ for (const ref of candidates) {
 if (!mergeBase) bail("no merge base against " + candidates.join(" or "));
 
 // Files that C3 applies to: sources of the "other" packages (plugins, adapters, CLI, server, UI).
-const EXCLUDED = /^packages\/(kernel|core-model)\//;
+// `packages/capture/src/in-page/` is exception E1 (docs/CONSTRAINTS.md section 7): it runs inside the browser, where Node cannot
+// measure it, so vitest leaves it out of the coverage report and this script must not count it as uncovered.
+const EXCLUDED = /^packages\/(kernel|core-model)\/|^packages\/capture\/src\/in-page\//;
 const applies = (f) =>
   /^(packages|apps)\/.+\/src\/.+\.(ts|tsx)$/.test(f) && !EXCLUDED.test(f) && !/\.d\.ts$/.test(f);
 

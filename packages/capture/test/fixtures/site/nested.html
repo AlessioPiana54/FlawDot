@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nested</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 400px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="btn" class="abs" style="left: 10px; top: 10px; width: 200px; height: 40px">
+      <span style="display: block; width: 100px; height: 20px">Pay now</span>
+    </button>
+    <a id="lnk" class="abs" href="/" style="left: 10px; top: 70px; width: 200px; height: 40px">
+      <img
+        alt="Home page"
+        width="40"
+        height="30"
+        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='30'%3E%3Crect width='40' height='30' fill='%23888'/%3E%3C/svg%3E"
+      />
+    </a>
+    <h2 id="head" class="abs" style="left: 10px; top: 130px; width: 300px; height: 40px">
+      <span style="display: block; width: 100px; height: 20px">A heading</span>
+    </h2>
+    <p id="para" class="abs" style="left: 10px; top: 190px; width: 300px; height: 40px">
+      Own text <span style="display: inline-block; width: 40px; height: 20px">inline</span>
+    </p>
+  </body>
+</html>

@@ -9,6 +9,56 @@
   },
   "overrides": [
     {
+      "files": ["packages/capture/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/storage",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli"
+                ],
+                "message": "capture may import only core-model and Playwright (ADR-0001)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/capture/src/**/*.ts"],
+      "rules": {
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "document",
+            "message": "Browser code belongs in src/in-page/, which runs inside the page."
+          },
+          {
+            "name": "window",
+            "message": "Browser code belongs in src/in-page/, which runs inside the page."
+          },
+          {
+            "name": "CSS",
+            "message": "Browser code belongs in src/in-page/, which runs inside the page."
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/capture/src/in-page/**/*.ts"],
+      "rules": { "no-restricted-globals": "off" }
+    },
+    {
       "files": ["packages/core-model/**/*.ts"],
       "rules": {
         "no-restricted-imports": [
@@ -18,6 +68,10 @@
               {
                 "group": ["@flawdot/*"],
                 "message": "core-model must not import other packages (ADR-0001)."
+              },
+              {
+                "group": ["playwright", "playwright-core", "playwright/*", "@playwright/*"],
+                "message": "Only the capture package may depend on Playwright (ADR-0001)."
               },
               { "group": ["../../*"], "message": "Imports must stay inside the package." }
             ]

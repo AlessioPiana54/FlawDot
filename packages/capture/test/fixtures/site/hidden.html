@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hidden</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 800px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      id="h1"
+      class="abs"
+      style="left: 10px; top: 10px; width: 80px; height: 30px; display: none"
+    >
+      h1
+    </button>
+    <button
+      id="h2"
+      class="abs"
+      style="left: 10px; top: 50px; width: 80px; height: 30px; visibility: hidden"
+    >
+      h2
+    </button>
+    <button
+      id="h3"
+      class="abs"
+      style="left: 10px; top: 90px; width: 80px; height: 30px; opacity: 0"
+    >
+      h3
+    </button>
+    <button id="h4" class="abs" style="left: 10px; top: 130px; width: 0; height: 0; border: 0">
+      h4
+    </button>
+    <button id="h5" class="abs" style="left: -9999px; top: 170px; width: 80px; height: 30px">
+      h5
+    </button>
+    <button id="h6" class="abs" style="left: 10px; top: 210px; width: 1px; height: 1px; border: 0">
+      h6
+    </button>
+    <div style="opacity: 0">
+      <button id="h7" class="abs" style="left: 10px; top: 250px; width: 80px; height: 30px">
+        h7
+      </button>
+    </div>
+    <button id="v1" class="abs" style="left: 10px; top: 300px; width: 80px; height: 30px">
+      v1
+    </button>
+    <button id="v2" class="abs" style="left: 10px; top: 340px; width: 80px; height: 30px">
+      v2
+    </button>
+    <button
+      id="av"
+      class="abs"
+      aria-hidden="true"
+      style="left: 10px; top: 380px; width: 80px; height: 30px"
+    >
+      av
+    </button>
+  </body>
+</html>

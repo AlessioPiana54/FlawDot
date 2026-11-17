@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Priority</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 4800px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // 160 rows: button, heading, image and paragraph in turn, 30 px apart.
+      const image =
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100'%3E%3Crect width='200' height='100' fill='%23888'/%3E%3C/svg%3E";
+      for (let i = 0; i < 160; i += 1) {
+        const kind = i % 4;
+        const el = document.createElement(["button", "h2", "img", "p"][kind]);
+        el.id = "r" + i;
+        el.className = "abs";
+        el.style.cssText = "left: 0; top: " + i * 30 + "px; width: 200px; height: 24px";
+        if (kind === 2) {
+          el.alt = "row " + i;
+          el.src = image;
+        } else {
+          el.textContent = "row " + i;
+        }
+        document.body.appendChild(el);
+      }
+    </script>
+  </body>
+</html>
