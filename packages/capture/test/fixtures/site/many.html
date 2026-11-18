@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Many</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 800px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      #grid {
+        width: 1440px;
+        font-size: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="grid"></div>
+    <script>
+      // 5200 small buttons: more than the script looks at, and cheap to lay out.
+      const grid = document.getElementById("grid");
+      for (let i = 0; i < 5200; i += 1) {
+        const button = document.createElement("button");
+        button.id = "b" + i;
+        button.style.cssText =
+          "display: inline-block; width: 10px; height: 10px; margin: 0; padding: 0; border: 0";
+        grid.appendChild(button);
+      }
+    </script>
+  </body>
+</html>

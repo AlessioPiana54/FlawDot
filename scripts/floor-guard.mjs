@@ -4,6 +4,8 @@
 // Exit codes: 0 clean, 1 floor violation, 2 the guard could not run. A 2 never reads as a 0.
 // Adapted from the constraint-driven-development reference. Only moves that LOWER the bar are reported.
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
 
 const argBase = (() => {
   const i = process.argv.indexOf("--base");
@@ -158,6 +160,49 @@ const scan = (baseRef) => {
     }
   }
 
+  // Rule 6, the limits of the benchmarks (CONSTRAINTS §4): scripts/bench-limits.json says, per benchmark, how many
+  // milliseconds are a warning and how many a failure. A HIGHER number is the loosened one. A number that was
+  // removed without another in its place is a limit that is gone. Same pairing as the coverage thresholds above.
+  const BENCH_LIMITS_FILE = "scripts/bench-limits.json";
+  const BENCH_LIMIT = /"(warnMs|failMs)"\s*:\s*(\d+(?:\.\d+)?)/;
+  const limitNums = (lines, key) =>
+    lines
+      .filter((l) => l.file === BENCH_LIMITS_FILE)
+      .map((l) => BENCH_LIMIT.exec(l.text))
+      .filter((m) => m && m[1] === key)
+      .map((m) => Number(m[2]));
+  for (const key of ["warnMs", "failMs"]) {
+    const before = limitNums(removed, key);
+    const after = limitNums(added, key);
+    before.forEach((b, i) => {
+      const a = after[i];
+      if (a === undefined) flag("threshold-removed", BENCH_LIMITS_FILE, `${key}: ${b}`);
+      else if (a > b) flag("threshold-loosened", BENCH_LIMITS_FILE, `${key}: ${b} -> ${a}`);
+    });
+  }
+  if (deleted.includes(BENCH_LIMITS_FILE)) {
+    flag("threshold-removed", BENCH_LIMITS_FILE, "file deleted");
+  }
+
+  // Exceptions of docs/CONSTRAINTS.md section 7 that are written in these files. Each is the exact text the user
+  // approved: a new "exclude" in the coverage configuration, or a different EXCLUDED pattern in diff-coverage, is
+  // a new exception and needs the user to approve it (and to add its line here).
+  const APPROVED_COVERAGE_EXCLUDE = 'exclude: ["packages/capture/src/in-page/**"],'; // E1
+  const APPROVED_DIFF_EXCLUDED =
+    "const EXCLUDED = /^packages\\/(kernel|core-model)\\/|^packages\\/capture\\/src\\/in-page\\//;"; // E1
+  for (const f of configFiles) {
+    for (const l of added.filter((a) => a.file === f)) {
+      if (/\bexclude\s*:/.test(l.text) && l.text.trim() !== APPROVED_COVERAGE_EXCLUDE) {
+        flag("exception-added", f, l.text.trim());
+      }
+    }
+  }
+  for (const l of added.filter((a) => a.file === "scripts/diff-coverage.mjs")) {
+    if (l.text.includes("const EXCLUDED") && l.text.trim() !== APPROVED_DIFF_EXCLUDED) {
+      flag("exception-added", l.file, l.text.trim());
+    }
+  }
+
   // A rule token that appears fewer times after the edit was removed or renamed away.
   const WATCHED = [
     {
@@ -166,13 +211,16 @@ const scan = (baseRef) => {
     },
     {
       test: /^package\.json$/,
-      tokens: ['"check:fast"', '"check:task"', '"check:full"', '"typecheck"', '"lint"'],
+      tokens: ['"check:fast"', '"check:task"', '"check:full"', '"typecheck"', '"lint"', '"bench"'],
     },
     {
       test: /^\.github\/workflows\/.*\.ya?ml$/,
-      tokens: ["- name:", "gitleaks", "osv-scanner", "semgrep"],
+      tokens: ["- name:", "gitleaks", "osv-scanner", "semgrep", "pnpm bench"],
     },
-    { test: /^scripts\/(quality-gate|diff-coverage)\.mjs$/, tokens: ["process.exit", "exitCode"] },
+    {
+      test: /^scripts\/(quality-gate|diff-coverage|bench-gate)\.mjs$/,
+      tokens: ["process.exit", "exitCode"],
+    },
   ];
   const count = (lines, token) => lines.filter((l) => l.text.includes(token)).length;
   for (const { test, tokens } of WATCHED) {
@@ -188,6 +236,27 @@ const scan = (baseRef) => {
 };
 scan(mergeBase);
 scan("HEAD");
+
+// E2 (docs/CONSTRAINTS.md section 7): osv-scanner reads an osv-scanner.toml in every folder it scans, and a file like
+// that can ignore advisories, extend a date or override a package. So the guard does not look at single added lines
+// (a different key, another file or another date would slip past them): EVERY osv-scanner.toml in the tree must be
+// the one file the user approved, byte for byte (line endings aside). Changing it, even a comment, needs the user's
+// approval and a new hash here.
+const APPROVED_OSV_CONFIG = {
+  path: "osv-scanner.toml",
+  sha256: "2daaaa9a05cb75adf652fadf052a95879fd3e5a99ac241da87f7cf87c0c8b2bb",
+};
+const treeFiles = git(["ls-files", "--cached", "--others", "--exclude-standard"]);
+if (treeFiles === null) bail("could not list the files of the tree");
+for (const f of treeFiles.split("\n").filter((name) => /(^|\/)osv-scanner\.toml$/.test(name))) {
+  if (!existsSync(f)) continue; // deleted: nothing is ignored any more
+  const digest = createHash("sha256")
+    .update(readFileSync(f, "utf8").replace(/\r\n/g, "\n"))
+    .digest("hex");
+  if (f !== APPROVED_OSV_CONFIG.path || digest !== APPROVED_OSV_CONFIG.sha256) {
+    flag("exception-added", f, "osv-scanner.toml is not the text approved for exception E2");
+  }
+}
 
 if (findings.length === 0) {
   console.log("floor-guard: clean");

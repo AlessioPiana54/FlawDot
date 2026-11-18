@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Old page</title>
+    <!-- No meta viewport on purpose: a phone lays this page out 980 pixels wide. Nothing on it is wider than 400. -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        height: 400px;
+        font: 16px/24px sans-serif;
+      }
+      #hello {
+        position: absolute;
+        box-sizing: border-box;
+        left: 10px;
+        top: 10px;
+        width: 100px;
+        height: 30px;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="hello">hello</button>
+  </body>
+</html>

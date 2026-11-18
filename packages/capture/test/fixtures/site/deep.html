@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deep</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 400px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="ok" class="abs" style="left: 10px; top: 10px; width: 100px; height: 30px">
+      ok
+    </button>
+    <div id="root" class="abs" style="left: 10px; top: 60px; width: 200px; height: 100px"></div>
+    <script>
+      // 150 nested boxes without an id or a class: the only unique selector is a path longer than the limit.
+      let parent = document.getElementById("root");
+      for (let i = 0; i < 150; i += 1) {
+        const child = document.createElement("div");
+        parent.appendChild(child);
+        parent = child;
+      }
+      const button = document.createElement("button");
+      button.textContent = "deep";
+      button.style.cssText = "display: block; width: 80px; height: 30px";
+      parent.appendChild(button);
+    </script>
+  </body>
+</html>

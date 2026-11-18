@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Scrolled</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 2400px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <header style="position: fixed; top: 0; left: 0; width: 100%; height: 64px; background: #123">
+      <a id="logo" class="abs" href="/" style="left: 16px; top: 12px; width: 120px; height: 40px"
+        >Logo</a
+      >
+    </header>
+    <button id="cta" class="abs" style="left: 40px; top: 200px; width: 180px; height: 48px">
+      Buy now
+    </button>
+    <script>
+      // The page scrolls itself once it has loaded: the capture must still report page coordinates.
+      window.addEventListener("load", () => window.scrollTo(0, 700));
+    </script>
+  </body>
+</html>

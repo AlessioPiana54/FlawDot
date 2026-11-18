@@ -33,6 +33,9 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The capture tests drive a real Chromium. --with-deps also installs its system libraries on Linux.
+      - name: Install Chromium
+        run: pnpm --filter @flawdot/capture exec playwright-core install --with-deps chromium
       # N1: no AI key in CI. Tests use the fake provider, never the real API.
       - name: Assert no Anthropic key is present
         shell: bash
@@ -42,3 +45,6 @@ jobs:
             exit 1
           fi
       - run: pnpm check:full
+      # B3 of docs/CONSTRAINTS.md section 4: the run summary warns above the limit, and the job fails above twice it.
+      - name: Benchmarks
+        run: pnpm bench

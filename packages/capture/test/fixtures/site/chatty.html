@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Chatty</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 400px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="ok" class="abs" style="left: 10px; top: 10px; width: 100px; height: 30px">
+      ok
+    </button>
+    <script>
+      // A request that never ends: the network never goes quiet.
+      fetch("/__hang");
+    </script>
+  </body>
+</html>

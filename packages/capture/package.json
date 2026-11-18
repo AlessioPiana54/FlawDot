@@ -1,0 +1,20 @@
+{
+  "name": "@flawdot/capture",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:browser": "vitest run browser"
+  },
+  "dependencies": {
+    "@flawdot/core-model": "workspace:*",
+    "playwright-core": "1.65.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2"
+  }
+}

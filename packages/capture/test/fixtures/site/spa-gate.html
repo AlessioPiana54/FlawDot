@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>App</title>
+  </head>
+  <body>
+    <!-- A single-page app: after the page has loaded, its router moves to a route (not a "login" one) and shows a login form. -->
+    <h1>App</h1>
+    <div id="view"></div>
+    <script>
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          history.replaceState(null, "", "/welcome");
+          document.getElementById("view").innerHTML =
+            '<input type="password" name="password" /><button id="enter">Enter</button>';
+        }, 200);
+      });
+    </script>
+  </body>
+</html>

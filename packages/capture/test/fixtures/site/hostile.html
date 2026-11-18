@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hostile</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        width: 1440px;
+        height: 800px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="x:y.z[0]" class="abs" style="left: 10px; top: 10px; width: 100px; height: 30px">
+      special
+    </button>
+    <button id="1lead" class="abs" style="left: 10px; top: 50px; width: 100px; height: 30px">
+      digit
+    </button>
+    <button id="日本語" class="abs" style="left: 10px; top: 90px; width: 100px; height: 30px">
+      nihongo
+    </button>
+    <button id='q"uote' class="abs" style="left: 10px; top: 130px; width: 100px; height: 30px">
+      quote
+    </button>
+    <button id="a b" class="abs" style="left: 10px; top: 170px; width: 100px; height: 30px">
+      space
+    </button>
+    <button id="dup" class="abs" style="left: 10px; top: 210px; width: 100px; height: 30px">
+      dup one
+    </button>
+    <button id="dup" class="abs" style="left: 10px; top: 250px; width: 100px; height: 30px">
+      dup two
+    </button>
+    <button
+      class="we!rd&quot;cl:ass.n\a me"
+      style="position: absolute; left: 10px; top: 290px; width: 100px; height: 30px"
+    >
+      weird
+    </button>
+    <button
+      data-testid='x"y]'
+      class="abs"
+      style="left: 10px; top: 330px; width: 100px; height: 30px"
+    >
+      testid
+    </button>
+    <button class="abs" style="left: 10px; top: 370px; width: 100px; height: 30px">
+      plain one
+    </button>
+    <button class="abs" style="left: 10px; top: 410px; width: 100px; height: 30px">
+      plain two
+    </button>
+  </body>
+</html>
