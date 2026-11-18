@@ -30,14 +30,14 @@ an error message names only the origin of the page, never its path or query stri
 
 Every failure is a `FlawDotError` with a code and a `retryable` flag.
 
-| What happened | Code |
-| --- | --- |
-| 401 or 403; a redirect to another path that is a login path, or that shows exactly one visible password field | `LOGIN_REQUIRED` |
-| The address answers with a PDF, JSON, a download or other data, not a web page | `INVALID_INPUT` |
-| Certificate or SSL problem (not worth another try) | `UNREACHABLE`, not retryable |
-| Server down, DNS, connection refused | `UNREACHABLE`, retryable |
-| The page, or a font it waits for, never finishes | `TIMEOUT` |
-| The caller aborted | `CANCELLED` |
+| What happened                                                                                                 | Code                         |
+| ------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| 401 or 403; a redirect to another path that is a login path, or that shows exactly one visible password field | `LOGIN_REQUIRED`             |
+| The address answers with a PDF, JSON, a download or other data, not a web page                                | `INVALID_INPUT`              |
+| Certificate or SSL problem (not worth another try)                                                            | `UNREACHABLE`, not retryable |
+| Server down, DNS, connection refused                                                                          | `UNREACHABLE`, retryable     |
+| The page, or a font it waits for, never finishes                                                              | `TIMEOUT`                    |
+| The caller aborted                                                                                            | `CANCELLED`                  |
 
 A 404 or a 5xx is captured as the page it is. A login page that was asked for directly is captured too: it may be the
 page to analyze. A path that only adds a language (`/` → `/en/`) is not a redirect to another page.
