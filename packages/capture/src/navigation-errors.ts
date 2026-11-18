@@ -1,14 +1,10 @@
-import { FlawDotError, isFlawDotError, type AbortSignalLike } from "@flawdot/core-model";
+import { FlawDotError, isFlawDotError, originOf, type AbortSignalLike } from "@flawdot/core-model";
 
 // Playwright throws its own errors with long call logs and the full URL. What leaves the capture is a FlawDotError
 // whose message names only the origin of the page: a path or a query string can hold a token, and an error message
 // is shown to the user and written to logs.
 
 export const NAVIGATION_TIMEOUT_MS = 30_000;
-
-export function originOf(url: string): string {
-  return URL.canParse(url) ? new URL(url).origin : "the page";
-}
 
 /** Playwright raises `TimeoutError`; the browser reports network failures as "net::ERR_...". */
 function isTimeout(error: unknown): boolean {

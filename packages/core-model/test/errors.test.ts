@@ -4,6 +4,7 @@ import {
   FlawDotError,
   flawDotErrorShapeSchema,
   isFlawDotError,
+  originOf,
   type FlawDotErrorCode,
 } from "../src/index.js";
 
@@ -69,5 +70,19 @@ describe("error shape schema", () => {
     expect(
       flawDotErrorShapeSchema.safeParse({ code: "BOOM", message: "x", retryable: false }).success,
     ).toBe(false);
+  });
+});
+
+describe("originOf: the part of an address that may go in a message", () => {
+  it("is the origin, with no path, query or fragment", () => {
+    expect(originOf("https://shop.example:8443/a/b?token=SECRET#x")).toBe(
+      "https://shop.example:8443",
+    );
+    expect(originOf("http://user:pass@127.0.0.1:3000/x")).toBe("http://127.0.0.1:3000");
+  });
+
+  it("is a neutral name for an address that cannot be read", () => {
+    expect(originOf("not a url")).toBe("the page");
+    expect(originOf("")).toBe("the page");
   });
 });

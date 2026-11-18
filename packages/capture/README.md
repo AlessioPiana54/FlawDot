@@ -26,6 +26,16 @@ A capture never fills a form, clicks, or leaves the page. It always closes its b
 caller aborts. The page is treated as hostile: what its script returns is validated and bounded in `src/raw.ts`, and
 an error message names only the origin of the page, never its path or query string.
 
+## The live page
+
+While `onLive` runs the page is still open, and the analyzers (axe) get it through `LivePage`. `boxOf` gives the box of
+an element, in CSS pixels of the whole page: a string is a selector of the page; a path (`["iframe", "#field"]`, or
+`[["#host", "#button"]]` for a shadow root) is the way to an element that a selector of the page cannot reach, and is
+walked one step at a time, adding the position of each iframe. It gives `null` when nothing is there (no match, a
+selector that is not valid, a closed shadow root, a step that is not an iframe). The elements that capture numbers
+include the `<iframe>` of a page, as it does an image, so that a finding about what is inside has a circle to sit on;
+what is inside a shadow root is not numbered.
+
 ## Errors
 
 Every failure is a `FlawDotError` with a code and a `retryable` flag.

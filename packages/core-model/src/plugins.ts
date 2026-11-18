@@ -24,9 +24,22 @@ import type { CaptureLimits } from "./settings.js";
  */
 export interface LivePage {
   readonly page: unknown;
-  /** The box of the element a selector matches, or null if it matches nothing. */
-  boxOf(selector: string): Promise<Box | null>;
+  /**
+   * The box of an element, in CSS pixels of the whole page, or null if nothing is there (no match, a selector that is
+   * not valid, a closed shadow root, an iframe that is gone). A string is a selector of the page; the first element
+   * it matches is measured. A path is for an element that a selector of the page cannot reach: see `ElementPath`.
+   */
+  boxOf(target: string | ElementPath): Promise<Box | null>;
 }
+
+/**
+ * The way to an element that is in an iframe or in a shadow root, in the form axe gives it. Each step is a selector in
+ * the document where the walk is: the page first, then the document of the iframe the step before named. A step that is
+ * a list is a walk through shadow roots: the selector of a host, then a selector inside its shadow root, and so on.
+ * `["iframe", "#field"]` is `#field` inside the `iframe` of the page; `[["#host", "#button"]]` is `#button` inside the
+ * shadow root of `#host`.
+ */
+export type ElementPath = readonly (string | readonly string[])[];
 
 export interface CaptureContext {
   runId: RunId;
@@ -84,12 +97,22 @@ export interface InputPlugin {
   ): Promise<Capture>;
 }
 
+/**
+ * What a rule analyzer found on one page and viewport. `needsReview` counts the places where the engine could not
+ * decide and a person has to look (axe "incomplete", counted in elements). They are never findings and never count
+ * in a score: the kernel adds the numbers of a run up for the appendix of the report.
+ */
+export interface RuleAnalysis {
+  drafts: FindingDraft[];
+  needsReview: number;
+}
+
 /** Finds problems with a deterministic engine. Its findings are "Verified". */
 export interface RuleAnalyzer {
   kind: "rule";
   id: "accessibility-wcag";
   category: Category;
-  analyze(capture: Capture, ctx: AnalyzerContext, signal: AbortSignalLike): Promise<FindingDraft[]>;
+  analyze(capture: Capture, ctx: AnalyzerContext, signal: AbortSignalLike): Promise<RuleAnalysis>;
 }
 
 /**

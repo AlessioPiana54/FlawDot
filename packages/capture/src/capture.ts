@@ -15,6 +15,7 @@ import {
 } from "@flawdot/core-model";
 import type { BrowserProvider } from "./browser-provider.js";
 import { measureBox } from "./in-page/measure.js";
+import { boxOfPath } from "./measure-path.js";
 import { collectCandidates } from "./in-page/collect.js";
 import { createGuard } from "./guard.js";
 import { readAriaSnapshot } from "./aria.js";
@@ -97,11 +98,13 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
       /** A page that is still open, for the analyzers that need it (axe). It is valid only while `onLive` runs. */
       const liveFor = (page: Page): LivePage => ({
         page,
-        boxOf: async (selector) =>
-          parseOrThrow(boxSchema.nullable(), await guard(page.evaluate(measureBox, selector)), {
-            code: "INTERNAL",
-            what: "box",
-          }),
+        boxOf: async (target) =>
+          typeof target === "string"
+            ? parseOrThrow(boxSchema.nullable(), await guard(page.evaluate(measureBox, target)), {
+                code: "INTERNAL",
+                what: "box",
+              })
+            : boxOfPath(page, target, guard),
       });
 
       // Only the error message depends on where the capture was when it failed.

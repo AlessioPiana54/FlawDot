@@ -57,6 +57,22 @@ export class FlawDotError extends Error implements FlawDotErrorShape {
   }
 }
 
+// `URL` is in every runtime FlawDot supports (Node 24+), but this package is compiled with no environment types on
+// purpose, so the one thing it needs of it is declared here. Nothing is emitted for a `declare`.
+declare const URL: {
+  canParse(url: string): boolean;
+  new (url: string): { readonly origin: string };
+};
+
+/**
+ * The origin of an address ("https://shop.example"), for a message. An error message is shown to the user and written
+ * to logs, and a path or a query string can hold a token, so a message names the origin and nothing more. An address
+ * that cannot be read is called "the page".
+ */
+export function originOf(url: string): string {
+  return URL.canParse(url) ? new URL(url).origin : "the page";
+}
+
 export function isFlawDotError(value: unknown): value is FlawDotError {
   return value instanceof FlawDotError;
 }

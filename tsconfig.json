@@ -6,6 +6,9 @@
     },
     {
       "path": "packages/capture"
+    },
+    {
+      "path": "packages/analyzer-rules"
     }
   ]
 }

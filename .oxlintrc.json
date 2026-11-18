@@ -59,6 +59,75 @@
       "rules": { "no-restricted-globals": "off" }
     },
     {
+      "files": ["packages/analyzer-rules/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-ai",
+                  "@flawdot/ai-*",
+                  "@flawdot/storage",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli"
+                ],
+                "message": "analyzer-rules may import only core-model, Playwright and axe (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/analyzer-rules/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-ai",
+                  "@flawdot/ai-*",
+                  "@flawdot/storage",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*"
+                ],
+                "message": "analyzer-rules src may import only core-model, Playwright and axe; capture is for tests only (A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ],
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "document",
+            "message": "axe runs in the page by itself; this package has no page code."
+          },
+          {
+            "name": "window",
+            "message": "axe runs in the page by itself; this package has no page code."
+          },
+          {
+            "name": "CSS",
+            "message": "axe runs in the page by itself; this package has no page code."
+          }
+        ]
+      }
+    },
+    {
       "files": ["packages/core-model/**/*.ts"],
       "rules": {
         "no-restricted-imports": [
@@ -71,7 +140,7 @@
               },
               {
                 "group": ["playwright", "playwright-core", "playwright/*", "@playwright/*"],
-                "message": "Only the capture package may depend on Playwright (ADR-0001)."
+                "message": "Only capture and analyzer-rules may depend on Playwright (ADR-0001)."
               },
               { "group": ["../../*"], "message": "Imports must stay inside the package." }
             ]

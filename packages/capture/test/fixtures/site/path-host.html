@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Path host</title>
+    <style>
+      body {
+        margin: 0;
+        width: 3000px;
+        height: 3000px;
+      }
+      iframe {
+        position: absolute;
+        left: 50px;
+        top: 100px;
+        width: 300px;
+        height: 200px;
+        border: 5px solid #000;
+      }
+      #host {
+        position: absolute;
+        left: 20px;
+        top: 400px;
+        width: 200px;
+        height: 60px;
+      }
+      #closed {
+        position: absolute;
+        left: 20px;
+        top: 500px;
+        width: 100px;
+        height: 30px;
+      }
+      #plain {
+        position: absolute;
+        left: 20px;
+        top: 600px;
+        width: 100px;
+        height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Every box is written in pixels and positioned, so a test can say where each element is. -->
+    <iframe id="frame" title="inner" src="/path-inner.html"></iframe>
+    <div id="host"></div>
+    <div id="closed"></div>
+    <div id="plain"></div>
+    <script>
+      const shadow = document.getElementById("host").attachShadow({ mode: "open" });
+      shadow.innerHTML =
+        '<button id="sb" style="position:absolute;left:8px;top:4px;width:50px;height:20px"></button>' +
+        '<div id="mid" style="position:absolute;left:100px;top:10px;width:90px;height:40px"></div>';
+      shadow.getElementById("mid").attachShadow({ mode: "open" }).innerHTML =
+        '<i id="deep" style="position:absolute;left:5px;top:6px;width:20px;height:10px"></i>';
+      document.getElementById("closed").attachShadow({ mode: "closed" }).innerHTML =
+        '<button id="cb" style="position:absolute;left:1px;top:1px;width:10px;height:10px"></button>';
+    </script>
+  </body>
+</html>

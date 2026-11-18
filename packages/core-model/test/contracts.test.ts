@@ -17,6 +17,7 @@ import {
   type LivePage,
   type McpRequestQueue,
   type ProjectRepository,
+  type RuleAnalysis,
   type RuleAnalyzer,
   type RunRepository,
   type SecretStore,
@@ -106,6 +107,9 @@ describe("an input plugin is built from two halves, one per module", () => {
     expect(taken).toBe(capture);
     expect(received).toBeUndefined(); // this stub never calls it
     expect(await live.boxOf("#x")).toBeNull();
+    // The way to an element in an iframe, or in a shadow root, is a list of steps (the form axe gives it).
+    expect(await live.boxOf(["iframe", "#x"])).toBeNull();
+    expect(await live.boxOf([["#host", "#x"]])).toBeNull();
   });
 
   it("does not need the optional live-page callback", async () => {
@@ -118,7 +122,7 @@ describe("an analyzer is either a rule analyzer or an AI analyzer", () => {
     kind: "rule",
     id: "accessibility-wcag",
     category: "accessibility",
-    analyze: async () => [],
+    analyze: async () => ({ drafts: [], needsReview: 0 }),
   } satisfies RuleAnalyzer;
 
   const ai = {
@@ -141,6 +145,11 @@ describe("an analyzer is either a rule analyzer or an AI analyzer", () => {
   it("can be told apart by its kind", () => {
     expect(describeKind(rules)).toBe("rules:accessibility-wcag");
     expect(describeKind(ai)).toBe("ai:conversion");
+  });
+
+  it("answers with its drafts and with how many places need a person, which are not findings", async () => {
+    const analysis: RuleAnalysis = await rules.analyze();
+    expect(analysis).toEqual({ drafts: [], needsReview: 0 });
   });
 
   it("builds one request per tile; the answers are read with the shared `toDrafts`", () => {

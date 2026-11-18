@@ -11,20 +11,21 @@ function is pure, so the package runs the same in Node and in the browser, and i
 
 ## What is inside
 
-| Module                   | What it gives you                                                                                                                                                  |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ids.ts`                 | Branded IDs (`ProjectId`, `RunId`, `FindingId`, `MarkId`), so a run ID cannot be passed where a finding ID is expected.                                            |
-| `domain.ts`              | `Run`, `Capture`, `Element`, viewports, categories, severities and the schemas for them, with their invariants (for example, a run has an end time when finished). |
-| `finding.ts`             | `FindingDraft` and `Finding`, `toFinding`, `normalizeSelector` and the `fingerprint` that identifies a problem across runs.                                        |
-| `scoring.ts`             | The score formula: `categoryScore`, `pageScore`, `siteScore` and `band`.                                                                                           |
-| `numbering.ts`           | `numberFindings`: the numbers of the circles drawn on the screenshot.                                                                                              |
-| `schemas.ts`             | Strict schemas for what an AI (or Claude Code, through `record_findings`) sends back, and the JSON Schema given to the AI.                                         |
-| `ai-request.ts`          | The AI request for one tile of a page, and `toDrafts`, which turns an answer into finding drafts and says what it dropped.                                         |
-| `plugins.ts`, `ports.ts` | The interfaces that other packages implement: input, analyzers, AI fulfillers and providers, repositories, the secret store, the annotator and more.               |
-| `settings.ts`            | The app settings, their limits and their defaults.                                                                                                                 |
-| `errors.ts`, `parse.ts`  | `FlawDotError` with stable error codes, and `parseOrThrow` for every piece of data that comes from outside.                                                        |
-| `events.ts`              | The progress events of a run.                                                                                                                                      |
-| `sha256.ts`              | A SHA-256 in plain TypeScript, so fingerprints do not depend on `node:crypto`.                                                                                     |
+| Module                   | What it gives you                                                                                                                                                    |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ids.ts`                 | Branded IDs (`ProjectId`, `RunId`, `FindingId`, `MarkId`), so a run ID cannot be passed where a finding ID is expected.                                              |
+| `domain.ts`              | `Run`, `Capture`, `Element`, viewports, categories, severities and the schemas for them, with their invariants (for example, a run has an end time when finished).   |
+| `finding.ts`             | `FindingDraft` and `Finding`, `toFinding`, `normalizeSelector` and the `fingerprint` that identifies a problem across runs.                                          |
+| `scoring.ts`             | The score formula: `categoryScore`, `pageScore`, `siteScore` and `band`.                                                                                             |
+| `marks.ts`               | `markForBox`: the mark that an element of the page belongs to (same box within 1 px, else the smallest mark that holds it).                                          |
+| `numbering.ts`           | `numberFindings`: the numbers of the circles drawn on the screenshot.                                                                                                |
+| `schemas.ts`             | Strict schemas for what an AI (or Claude Code, through `record_findings`) sends back, and the JSON Schema given to the AI.                                           |
+| `ai-request.ts`          | The AI request for one tile of a page, and `toDrafts`, which turns an answer into finding drafts and says what it dropped.                                           |
+| `plugins.ts`, `ports.ts` | The interfaces that other packages implement: input, analyzers, AI fulfillers and providers, repositories, the secret store, the annotator and more.                 |
+| `settings.ts`            | The app settings, their limits and their defaults.                                                                                                                   |
+| `errors.ts`, `parse.ts`  | `FlawDotError` with stable error codes, `originOf` (what an error message may say of an address) and `parseOrThrow` for every piece of data that comes from outside. |
+| `events.ts`              | The progress events of a run.                                                                                                                                        |
+| `sha256.ts`              | A SHA-256 in plain TypeScript, so fingerprints do not depend on `node:crypto`.                                                                                       |
 
 Only what `src/index.ts` exports is the public contract.
 

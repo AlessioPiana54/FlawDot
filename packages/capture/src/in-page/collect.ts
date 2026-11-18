@@ -46,7 +46,7 @@ export function collectCandidates(argument: CollectArgument): CollectResult {
     '[contenteditable="true"]',
   ].join(",");
   const HEADING = "h1,h2,h3,h4,h5,h6,[role=heading]";
-  const IMAGE = "img,canvas,video,[role=img]";
+  const IMAGE = "img,canvas,video,iframe,[role=img]";
   const TEXT = "p,li,blockquote,figcaption,label,dt,dd,td,th";
   const NOT_CONTENT = "script,style,noscript,template,meta,link,head,title";
   // Nothing a page says about an element is read past this length, so a page cannot make the capture carry
