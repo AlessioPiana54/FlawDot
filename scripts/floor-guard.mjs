@@ -160,6 +160,30 @@ const scan = (baseRef) => {
     }
   }
 
+  // Rule 6, the limits of the benchmarks (CONSTRAINTS §4): scripts/bench-limits.json says, per benchmark, how many
+  // milliseconds are a warning and how many a failure. A HIGHER number is the loosened one. A number that was
+  // removed without another in its place is a limit that is gone. Same pairing as the coverage thresholds above.
+  const BENCH_LIMITS_FILE = "scripts/bench-limits.json";
+  const BENCH_LIMIT = /"(warnMs|failMs)"\s*:\s*(\d+(?:\.\d+)?)/;
+  const limitNums = (lines, key) =>
+    lines
+      .filter((l) => l.file === BENCH_LIMITS_FILE)
+      .map((l) => BENCH_LIMIT.exec(l.text))
+      .filter((m) => m && m[1] === key)
+      .map((m) => Number(m[2]));
+  for (const key of ["warnMs", "failMs"]) {
+    const before = limitNums(removed, key);
+    const after = limitNums(added, key);
+    before.forEach((b, i) => {
+      const a = after[i];
+      if (a === undefined) flag("threshold-removed", BENCH_LIMITS_FILE, `${key}: ${b}`);
+      else if (a > b) flag("threshold-loosened", BENCH_LIMITS_FILE, `${key}: ${b} -> ${a}`);
+    });
+  }
+  if (deleted.includes(BENCH_LIMITS_FILE)) {
+    flag("threshold-removed", BENCH_LIMITS_FILE, "file deleted");
+  }
+
   // Exceptions of docs/CONSTRAINTS.md section 7 that are written in these files. Each is the exact text the user
   // approved: a new "exclude" in the coverage configuration, or a different EXCLUDED pattern in diff-coverage, is
   // a new exception and needs the user to approve it (and to add its line here).
@@ -187,13 +211,16 @@ const scan = (baseRef) => {
     },
     {
       test: /^package\.json$/,
-      tokens: ['"check:fast"', '"check:task"', '"check:full"', '"typecheck"', '"lint"'],
+      tokens: ['"check:fast"', '"check:task"', '"check:full"', '"typecheck"', '"lint"', '"bench"'],
     },
     {
       test: /^\.github\/workflows\/.*\.ya?ml$/,
-      tokens: ["- name:", "gitleaks", "osv-scanner", "semgrep"],
+      tokens: ["- name:", "gitleaks", "osv-scanner", "semgrep", "pnpm bench"],
     },
-    { test: /^scripts\/(quality-gate|diff-coverage)\.mjs$/, tokens: ["process.exit", "exitCode"] },
+    {
+      test: /^scripts\/(quality-gate|diff-coverage|bench-gate)\.mjs$/,
+      tokens: ["process.exit", "exitCode"],
+    },
   ];
   const count = (lines, token) => lines.filter((l) => l.text.includes(token)).length;
   for (const { test, tokens } of WATCHED) {

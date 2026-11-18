@@ -4,6 +4,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: ["packages/*/test/**/*.test.ts"],
+    // B1-B6 of docs/CONSTRAINTS.md section 4. `pnpm bench` runs them; `vitest run` and `check:task` do not.
+    benchmark: { include: ["packages/*/bench/**/*.bench.ts"] },
     coverage: {
       provider: "v8",
       include: ["packages/*/src/**/*.ts"],

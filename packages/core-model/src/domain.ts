@@ -201,6 +201,12 @@ export const captureSchema = z
   .object({
     runId: runIdSchema,
     page: pageTargetSchema,
+    /**
+     * Where the browser ended up after the redirects of the server. `page` stays the page that was asked for and is
+     * the identity of the capture; this is only recorded when it is another address, so no value means "not
+     * redirected". A reader uses `finalUrl ?? page.url`.
+     */
+    finalUrl: httpUrlSchema.optional(),
     viewport: viewportSchema,
     screenshot: z.object({
       path: nonEmpty,
@@ -249,6 +255,9 @@ export const captureSchema = z
       } else if (last !== undefined && Math.abs(last.top + last.height - pageHeight) > 1) {
         fail("The last tile must end where the screenshot ends", ["tiles"]);
       }
+    }
+    if (capture.finalUrl !== undefined && capture.finalUrl === capture.page.url) {
+      fail("A final URL equal to the requested one is not recorded", ["finalUrl"]);
     }
     const { truncation } = capture;
     if (

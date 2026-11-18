@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Responsive</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        position: relative;
+        height: 1200px;
+        font: 16px/24px sans-serif;
+      }
+      .abs {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        overflow: hidden;
+        color: #ffffff;
+      }
+      /* Fluid: 20 pixels from each side of the window, so its width follows the viewport. */
+      #cta {
+        left: 20px;
+        right: 20px;
+        top: 20px;
+        height: 40px;
+        background: #cc0000;
+      }
+      #nav {
+        left: 20px;
+        top: 100px;
+        width: 100px;
+        height: 30px;
+        background: #0000cc;
+      }
+      #burger {
+        display: none;
+        left: 20px;
+        top: 100px;
+        width: 30px;
+        height: 30px;
+        background: #00aa00;
+      }
+      /* The tablet (768) still shows the menu; only the phone (390) shows the burger. */
+      @media (max-width: 599px) {
+        #nav {
+          display: none;
+        }
+        #burger {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button id="cta" class="abs">cta</button>
+    <a id="nav" class="abs" href="#nav">menu</a>
+    <button id="burger" class="abs" aria-label="Menu"></button>
+  </body>
+</html>

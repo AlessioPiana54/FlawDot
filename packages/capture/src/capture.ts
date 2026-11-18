@@ -19,12 +19,14 @@ import { collectCandidates } from "./in-page/collect.js";
 import { createGuard } from "./guard.js";
 import { readAriaSnapshot } from "./aria.js";
 import { shootMarked } from "./marked.js";
-import { NAVIGATION_TIMEOUT_MS, toFlawDotError } from "./navigation-errors.js";
+import { checkArrival, finalUrlFor } from "./navigation.js";
+import { NAVIGATION_TIMEOUT_MS, toFlawDotError, type CapturePhase } from "./navigation-errors.js";
 import { pngSize } from "./png.js";
 import { RAW_MAX, parsePageMetrics, parseRawPage } from "./raw.js";
 import { dropOutsideCut, numberElements, usableElements } from "./set-of-marks.js";
 import { QUIET_NETWORK_MS, stabilize } from "./stabilize.js";
 import { buildTruncation, maxCutHeight, maxCutWidth } from "./tiles.js";
+import { contextOptionsFor } from "./viewports.js";
 
 export interface UrlCaptureDeps {
   browser: BrowserProvider;
@@ -56,8 +58,7 @@ async function withContext<T>(
   work: (context: BrowserContext) => Promise<T>,
 ): Promise<T> {
   const context = await browser.newContext({
-    viewport: { width: viewport.width, height: viewport.height },
-    deviceScaleFactor: viewport.deviceScaleFactor,
+    ...contextOptionsFor(viewport),
     colorScheme: "light",
     reducedMotion: "reduce",
     serviceWorkers: "block",
@@ -103,13 +104,19 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
           }),
       });
 
+      // Only the error message depends on where the capture was when it failed.
+      let phase: CapturePhase = "loading";
+
       try {
         if (signal.aborted) throw new FlawDotError("CANCELLED", "The capture was cancelled.");
         const browser = await deps.browser.get();
         return await withContext(browser, viewport, signal, async (browserContext) => {
           browserContext.setDefaultTimeout(timeout);
           const page = await browserContext.newPage();
-          await page.goto(pageTarget.url, { timeout, waitUntil: "load" });
+          const response = await page.goto(pageTarget.url, { timeout, waitUntil: "load" });
+          // A login page, an answer that is not a page: said now, before the page is scrolled and photographed.
+          await checkArrival(page, response, pageTarget.url, guard);
+          phase = "measuring";
           // The picture is never taller than the user allows, nor than the browser can draw at this pixel ratio.
           const maxCut = maxCutHeight(ctx.limits, viewport.deviceScaleFactor);
           await stabilize(page, {
@@ -118,6 +125,11 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
             screenHeight: viewport.height,
             limitHeight: maxCut,
           });
+          // A single-page app can send the visitor to its login route after the page has loaded, while the capture
+          // waited for the network to go quiet and scrolled. The address is looked at again, with no response this
+          // time (there is no new answer to read), and where the page ended is the address it has now.
+          await checkArrival(page, null, pageTarget.url, guard);
+          const finalUrl = finalUrlFor(pageTarget.url, page.url());
 
           const reported = await guard(
             page.evaluate(collectCandidates, { max: RAW_MAX, selectorMax: SELECTOR_MAX }),
@@ -139,6 +151,7 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
 
           const name = fileNameFor(pageTarget.url, viewport);
           const screenshotPath = deps.artifacts.pathFor(ctx.runId, "screenshot", name);
+          phase = "picture";
           const picture = await guard(
             page.screenshot({
               path: screenshotPath,
@@ -167,6 +180,7 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
             {
               runId: ctx.runId,
               page: pageTarget,
+              ...(finalUrl === undefined ? {} : { finalUrl }),
               viewport,
               screenshot: { path: screenshotPath, ...size },
               marked,
@@ -179,11 +193,13 @@ export function createUrlCapture(deps: UrlCaptureDeps): Pick<InputPlugin, "captu
             },
             { code: "INTERNAL", what: "capture" },
           );
+          // What goes wrong from here on is the caller's (an analyzer's), not the page's.
+          phase = "analysis";
           if (onLive !== undefined) await onLive(liveFor(page), capture);
           return capture;
         });
       } catch (error) {
-        throw toFlawDotError(error, { url: pageTarget.url, signal });
+        throw toFlawDotError(error, { url: pageTarget.url, signal, phase });
       }
     },
   };

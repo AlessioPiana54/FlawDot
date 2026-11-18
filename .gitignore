@@ -44,6 +44,7 @@ storageState*.json
 .flawdot/
 
 # Test and Playwright artifacts
+bench-results/
 coverage/
 test-results/
 playwright-report/

@@ -256,3 +256,24 @@ describe("capture", () => {
     ["an invalid element inside", { elements: [{ ...element, mark: -1 }] }],
   ])("rejects %s", (_why, patch) => rejects(captureSchema, { ...capture, ...patch }));
 });
+
+describe("capture: final URL after redirects", () => {
+  it("accepts a capture with no final URL, and one that was redirected to another http(s) page", () => {
+    expect(captureSchema.safeParse(capture).success).toBe(true);
+    const redirected = { ...capture, finalUrl: "https://example.com/en/home" };
+    expect(captureSchema.safeParse(redirected).success).toBe(true);
+  });
+
+  it("keeps the requested page as the identity of the capture", () => {
+    const parsed = captureSchema.parse({ ...capture, finalUrl: "https://example.com/en/home" });
+    expect(parsed.page).toEqual(capture.page);
+  });
+
+  it.each([
+    ["a URL with credentials", "https://user:secret@example.com/home"],
+    ["a protocol that is not http", "javascript:alert(1)"],
+    ["a file URL", "file:///etc/passwd"],
+    ["text that is not a URL", "not a url"],
+    ["the requested URL itself", capture.page.url],
+  ])("rejects %s", (_why, finalUrl) => rejects(captureSchema, { ...capture, finalUrl }));
+});

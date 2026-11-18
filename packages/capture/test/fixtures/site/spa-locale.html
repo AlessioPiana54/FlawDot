@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>App</title>
+  </head>
+  <body>
+    <!-- A single-page app that adds the language to the address after it has loaded. It is the same page. -->
+    <h1>App</h1>
+    <button id="go">Go</button>
+    <script>
+      window.addEventListener("load", () => {
+        setTimeout(() => history.replaceState(null, "", "/en/"), 200);
+      });
+    </script>
+  </body>
+</html>

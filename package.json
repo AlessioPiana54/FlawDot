@@ -13,6 +13,7 @@
     "format:check": "prettier --check .",
     "browsers": "pnpm --filter @flawdot/capture exec playwright-core install chromium",
     "test": "vitest run",
+    "bench": "vitest bench --run && node scripts/bench-gate.mjs",
     "check:fast": "pnpm typecheck && pnpm lint && pnpm format:check",
     "check:task": "pnpm check:fast && node scripts/floor-guard.mjs && vitest run --coverage && node scripts/diff-coverage.mjs",
     "check:full": "pnpm check:task"
