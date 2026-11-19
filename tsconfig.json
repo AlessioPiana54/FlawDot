@@ -12,6 +12,12 @@
     },
     {
       "path": "packages/annotation"
+    },
+    {
+      "path": "packages/test-support"
+    },
+    {
+      "path": "packages/storage"
     }
   ]
 }

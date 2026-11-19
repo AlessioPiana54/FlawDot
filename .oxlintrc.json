@@ -171,6 +171,108 @@
       }
     },
     {
+      "files": ["packages/storage/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/annotation",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp"
+                ],
+                "message": "storage may import only core-model (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/storage/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/annotation",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "@flawdot/test-support",
+                  "vitest"
+                ],
+                "message": "storage src may import only core-model; the contract suites are for tests only (A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/test-support/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/annotation",
+                  "@flawdot/storage",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp"
+                ],
+                "message": "test-support may import only core-model and vitest, never an adapter (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "files": ["packages/core-model/**/*.ts"],
       "rules": {
         "no-restricted-imports": [

@@ -251,6 +251,29 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
 
+  packages/storage:
+    dependencies:
+      '@flawdot/core-model':
+        specifier: workspace:*
+        version: link:../core-model
+    devDependencies:
+      '@flawdot/test-support':
+        specifier: workspace:*
+        version: link:../test-support
+      '@types/node':
+        specifier: 24.19.2
+        version: 24.19.2
+
+  packages/test-support:
+    dependencies:
+      '@flawdot/core-model':
+        specifier: workspace:*
+        version: link:../core-model
+    devDependencies:
+      '@types/node':
+        specifier: 24.19.2
+        version: 24.19.2
+
 packages:
 
   '@axe-core/playwright@4.14.0':

@@ -1,0 +1,19 @@
+{
+  "name": "@flawdot/storage",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@flawdot/core-model": "workspace:*"
+  },
+  "devDependencies": {
+    "@flawdot/test-support": "workspace:*",
+    "@types/node": "24.19.2"
+  }
+}
