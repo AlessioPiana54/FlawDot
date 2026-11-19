@@ -134,7 +134,7 @@ function draftFor(
     // The general text of the rule comes before the summary of this element: the summary holds values that the page
     // wrote, and it is only a fallback for a rule that has no general text.
     fix: firstText([texts?.fix, violation.help, node.failureSummary, violation.id], FIX_MAX, true),
-    evidence: evidenceFor(violation.id, node),
+    evidence: evidenceFor(violation.id, node, language),
     principle: principleFor(violation.tags, deps.wcag, language),
     source: { kind: "rule", engine: "axe-core", ruleId: violation.id },
     location,

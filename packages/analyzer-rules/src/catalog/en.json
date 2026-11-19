@@ -1,0 +1,152 @@
+{
+  "color-contrast": {
+    "title": "Text does not stand out enough from its background",
+    "explanation": "Text with too little contrast is hard to read for people with low vision, in bright light or on a dim screen. Normal text needs a contrast ratio of at least 4.5:1, large text at least 3:1.",
+    "fix": "Darken the text or lighten the background (or the other way round) until the ratio reaches 4.5:1. For example, #767676 on white is the lightest grey that passes. Check the pair of colors with a contrast checker."
+  },
+  "image-alt": {
+    "title": "Image has no text alternative",
+    "explanation": "A screen reader cannot describe an image that has no alt text, so people who cannot see it miss what it shows.",
+    "fix": "Add an alt attribute that says what the image shows or does, like alt=\"Bar chart of monthly sales\". If the image is only decoration, use an empty alt=\"\"."
+  },
+  "link-name": {
+    "title": "Link has no readable text",
+    "explanation": "A link with no text or label is announced only as \"link\", so nobody can tell where it goes.",
+    "fix": "Put readable text inside the link, or add an aria-label that says where it goes, like aria-label=\"Open the pricing page\". Give icon-only links a label too."
+  },
+  "button-name": {
+    "title": "Button has no accessible name",
+    "explanation": "A button without a name is announced only as \"button\", so people who use a screen reader or voice control cannot tell what it does.",
+    "fix": "Write visible text in the button. If it holds only an icon, add an aria-label, like <button aria-label=\"Close\">."
+  },
+  "label": {
+    "title": "Form field has no label",
+    "explanation": "Without a label, people who use a screen reader do not know what to type, and the field is harder to click or tap.",
+    "fix": "Connect a <label for=\"id\"> to the field, or wrap the field in the label. Do not rely on a placeholder alone."
+  },
+  "html-has-lang": {
+    "title": "Page does not declare its language",
+    "explanation": "Screen readers use the language of the page to choose the voice and the pronunciation. Without it, text can be read with the wrong accent.",
+    "fix": "Add the language to the root element, for example <html lang=\"en\">."
+  },
+  "document-title": {
+    "title": "Page has no title",
+    "explanation": "The title is the first thing a screen reader announces, and the name shown in browser tabs and search results. Without it, people cannot tell pages apart.",
+    "fix": "Add a short, unique <title> in the <head> that says what the page is about."
+  },
+  "heading-order": {
+    "title": "Heading levels skip a step",
+    "explanation": "People who use a screen reader move through a page by its headings. A jump from h2 to h4 suggests that content is missing and breaks the outline.",
+    "fix": "Use the heading levels in order, one step at a time (h1, h2, h3). Choose the level for the structure, and set the size with CSS."
+  },
+  "empty-heading": {
+    "title": "Heading is empty",
+    "explanation": "A heading with no text is announced as an empty stop in the outline of the page, and confuses people who navigate by headings.",
+    "fix": "Write the text of the heading, or remove the tag if it is only there for spacing. Use CSS for space."
+  },
+  "page-has-heading-one": {
+    "title": "Page has no main heading",
+    "explanation": "An h1 tells people what the page is about, and gives screen reader users a place to jump to.",
+    "fix": "Add one <h1> with the main topic of the page, and use h2 and below for the sections."
+  },
+  "landmark-one-main": {
+    "title": "Page has no main landmark",
+    "explanation": "The main landmark lets people who use a screen reader or a keyboard skip the menus and go straight to the content.",
+    "fix": "Wrap the central content of the page in one <main> element (or role=\"main\")."
+  },
+  "region": {
+    "title": "Some content is outside any landmark",
+    "explanation": "Content that sits outside a landmark is hard to find for screen reader users, who jump between landmarks like the header, the navigation, the main content and the footer.",
+    "fix": "Put all the visible content inside landmarks: <header>, <nav>, <main>, <footer>, or sections that have a label."
+  },
+  "select-name": {
+    "title": "Dropdown has no label",
+    "explanation": "Without a label, people who use a screen reader do not know what they are choosing.",
+    "fix": "Connect a <label for=\"id\"> to the <select>, or add an aria-label."
+  },
+  "input-button-name": {
+    "title": "Input button has no text",
+    "explanation": "A button made with <input type=\"submit\"> or similar needs a value, otherwise it is announced as a button with no name.",
+    "fix": "Give it a value attribute, like <input type=\"submit\" value=\"Send\">."
+  },
+  "input-image-alt": {
+    "title": "Image button has no text alternative",
+    "explanation": "An <input type=\"image\"> works as a button, so a screen reader needs to be told what the button does.",
+    "fix": "Add an alt attribute that names the action, like alt=\"Search\"."
+  },
+  "frame-title": {
+    "title": "Frame has no title",
+    "explanation": "Screen readers announce the title of an iframe, so people know what it holds before they go in.",
+    "fix": "Add a title to the <iframe> that describes its content, like title=\"Map of our office\"."
+  },
+  "aria-hidden-focus": {
+    "title": "Hidden content can still receive focus",
+    "explanation": "An element hidden with aria-hidden=\"true\" that can still be reached is invisible to a screen reader but not to the keyboard, so the focus lands on something that is not read.",
+    "fix": "Remove aria-hidden from the element, or make everything inside it unreachable (tabindex=\"-1\", disabled, or hidden with display:none)."
+  },
+  "aria-roles": {
+    "title": "ARIA role does not exist",
+    "explanation": "A role that is misspelled or invented is ignored, so assistive technology gets no information about what the element is.",
+    "fix": "Use a valid ARIA role from the specification, or remove the role if a native element such as <button> already does the job."
+  },
+  "aria-valid-attr-value": {
+    "title": "ARIA attribute has an invalid value",
+    "explanation": "An ARIA attribute with a value that does not fit, like aria-expanded=\"maybe\" or an id that does not exist, is ignored or misleading.",
+    "fix": "Use a value that the attribute accepts (for example true or false), and check that the ids in aria-labelledby, aria-controls and similar attributes point to elements that exist."
+  },
+  "aria-required-attr": {
+    "title": "ARIA role is missing a required attribute",
+    "explanation": "Some roles need attributes to work: a checkbox needs aria-checked, a slider needs aria-valuenow. Without them, the state of the element is unknown.",
+    "fix": "Add the attributes that the role requires, or use the native element (such as <input type=\"checkbox\">), which handles them for you."
+  },
+  "aria-allowed-attr": {
+    "title": "ARIA attribute is not allowed on this element",
+    "explanation": "An ARIA attribute that does not belong to the role of the element is ignored or confuses assistive technology.",
+    "fix": "Remove the attribute, or change the role or the element so that it is allowed. Check which attributes the role supports."
+  },
+  "aria-input-field-name": {
+    "title": "Custom input has no accessible name",
+    "explanation": "A custom input, such as a combobox or a slider, with no name leaves people who use a screen reader guessing what to enter.",
+    "fix": "Add an aria-label, or point aria-labelledby to visible text that names it."
+  },
+  "aria-command-name": {
+    "title": "Custom command has no accessible name",
+    "explanation": "An element with the role link, button or menuitem and no name is announced with its role only, without saying what it does.",
+    "fix": "Add visible text, an aria-label or an aria-labelledby that says what the command does."
+  },
+  "aria-required-children": {
+    "title": "ARIA role is missing the child elements it needs",
+    "explanation": "Some roles are containers that must hold specific children, like a list that holds list items. Without them, the structure is broken for assistive technology.",
+    "fix": "Add the child roles that are required (for example role=\"listitem\" inside role=\"list\"), or use the native elements <ul> and <li>."
+  },
+  "role-img-alt": {
+    "title": "Element with role img has no text alternative",
+    "explanation": "An element with role=\"img\" is treated as an image, so it needs a text alternative.",
+    "fix": "Add an aria-label or an aria-labelledby that describes the image, or remove role=\"img\" if it is only decoration."
+  },
+  "svg-img-alt": {
+    "title": "SVG that works as an image has no text alternative",
+    "explanation": "An SVG with role=\"img\" is treated as an image, so a screen reader needs a text that says what it shows.",
+    "fix": "Add a <title> inside the SVG or an aria-label, or aria-hidden=\"true\" if it is only decoration."
+  },
+  "list": {
+    "title": "List is not made of list items",
+    "explanation": "Screen readers announce how many items a list has. A <ul> or <ol> that holds other elements makes that count wrong.",
+    "fix": "Put only <li> elements (and script or template) directly inside <ul> and <ol>."
+  },
+  "listitem": {
+    "title": "List item is outside a list",
+    "explanation": "An <li> outside a <ul> or <ol> is not recognized as part of a list.",
+    "fix": "Put every <li> directly inside a <ul> or an <ol>."
+  },
+  "target-size": {
+    "title": "Tap or click target is too small",
+    "explanation": "Small targets are hard to hit with a finger, a mouse or a tremor, and easy to press by mistake when they sit next to another one. WCAG 2.2 asks for at least 24 by 24 CSS pixels.",
+    "fix": "Make the target at least 24x24 px with width, height or padding, or leave enough space around it. For touch, 44x44 px is more comfortable."
+  },
+  "meta-viewport": {
+    "title": "Zoom is blocked on the page",
+    "explanation": "Blocking pinch zoom, with user-scalable=no or a maximum-scale below 2, stops people with low vision from enlarging the text.",
+    "fix": "Remove user-scalable=no and any maximum-scale below 2 from the viewport meta tag (a maximum-scale of 5 or more is better still): <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">."
+  }
+}

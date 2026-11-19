@@ -15,7 +15,7 @@ import {
 } from "@flawdot/core-model";
 import { createChromiumProvider, createUrlCapture, type BrowserProvider } from "@flawdot/capture";
 import { createAxeAnalyzer } from "../../src/analyzer.js";
-import { emptyCatalog } from "../../src/catalog.js";
+import { defaultCatalog } from "../../src/default-catalog.js";
 import { WCAG_CRITERIA } from "../../src/wcag-criteria.js";
 import { startFixtureServer, type FixtureServer } from "./fixture-server.js";
 
@@ -83,7 +83,7 @@ export function useBrowserHarness() {
     ): Promise<Analyzed> {
       if (server === undefined || provider === undefined)
         throw new Error("The harness is not started");
-      const analyzer = createAxeAnalyzer({ catalog: emptyCatalog, wcag: WCAG_CRITERIA });
+      const analyzer = createAxeAnalyzer({ catalog: defaultCatalog, wcag: WCAG_CRITERIA });
       const result: Partial<Analyzed> = {};
       const capture = await createUrlCapture({
         browser: provider,

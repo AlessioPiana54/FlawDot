@@ -202,6 +202,9 @@ importers:
       '@flawdot/core-model':
         specifier: workspace:*
         version: link:../core-model
+      axe-core:
+        specifier: 4.14.1
+        version: 4.14.1
       playwright-core:
         specifier: 1.65.1
         version: 1.65.1

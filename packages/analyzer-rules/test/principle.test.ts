@@ -74,6 +74,7 @@ describe("principleFor: the principle a finding reports", () => {
 
   it("falls back to a plain label for a rule with neither a criterion nor best-practice", () => {
     expect(principleFor([], WCAG_CRITERIA, "en")).toEqual({ code: null, label: "axe rule" });
+    expect(principleFor([], WCAG_CRITERIA, "it")).toEqual({ code: null, label: "regola axe" });
   });
 });
 

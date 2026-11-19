@@ -8,7 +8,10 @@ const BEST_PRACTICE_LABEL: Readonly<Record<ReportLanguage, string>> = {
   en: "axe best practice",
   it: "buona pratica axe",
 };
-const PLAIN_RULE_LABEL = "axe rule";
+const PLAIN_RULE_LABEL: Readonly<Record<ReportLanguage, string>> = {
+  en: "axe rule",
+  it: "regola axe",
+};
 
 /** "1.4.3" before "1.4.11": numbers, not text. */
 const byNumber = (a: string, b: string): number => a.localeCompare(b, "en", { numeric: true });
@@ -40,6 +43,8 @@ export function principleFor(
   }
   return {
     code: null,
-    label: tags.includes("best-practice") ? BEST_PRACTICE_LABEL[language] : PLAIN_RULE_LABEL,
+    label: tags.includes("best-practice")
+      ? BEST_PRACTICE_LABEL[language]
+      : PLAIN_RULE_LABEL[language],
   };
 }

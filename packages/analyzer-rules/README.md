@@ -4,7 +4,7 @@ The rules half of FlawDot's analysis: it runs [axe-core](https://github.com/dequ
 capture still has open, and turns what axe finds into drafts of "Verified" findings (the accessibility category). It
 is a private workspace package.
 
-It depends on `@flawdot/core-model`, `@axe-core/playwright` and `playwright-core`, and on nothing else of FlawDot.
+It depends on `@flawdot/core-model`, `@axe-core/playwright`, `axe-core` (pinned, the same version that runs on the page; its Italian texts are read from `locales/it.json`), `playwright-core` and `zod`, and on nothing else of FlawDot.
 `@flawdot/capture` is a dev dependency, used only by the browser tests; the code never imports it.
 
 ## How an analysis goes
@@ -34,21 +34,38 @@ up for the appendix of the report.
 
 ## What a finding is made of
 
-| Field                         | From                                                                                                                                            |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `category`, `source`          | always `accessibility`, and `{ kind: "rule", engine: "axe-core", ruleId }`                                                                      |
-| `severity`                    | axe impact: critical and serious are Critical, moderate is Medium, minor is Low                                                                 |
-| `ruleKey`                     | the axe rule id                                                                                                                                 |
-| `title`, `explanation`, `fix` | the catalog of FlawDot (Task 13; empty for now), else the `help`, `description` and failure summary of axe                                      |
-| `evidence`                    | contrast (`#c9c9c9 on #f7f5ff, 1.53:1 (needs 4.5:1)`) and a missing accessible name (`No accessible name on <button>`); nothing for other rules |
-| `principle`                   | the WCAG criterion from the tags (`wcag143` is 1.4.3, `wcag1411` is 1.4.11), with its name in English or Italian; a best practice has no code   |
-| `location`                    | the mark's own selector and box, with `count` = the number of elements of the rule; or the page                                                 |
+| Field                         | From                                                                                                                                                                                                                                                             |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `category`, `source`          | always `accessibility`, and `{ kind: "rule", engine: "axe-core", ruleId }`                                                                                                                                                                                       |
+| `severity`                    | axe impact: critical and serious are Critical, moderate is Medium, minor is Low                                                                                                                                                                                  |
+| `ruleKey`                     | the axe rule id                                                                                                                                                                                                                                                  |
+| `title`, `explanation`, `fix` | the catalog of FlawDot (30 rules, see "The catalog"), else the Italian text of axe in Italian, else the `help`, `description` and failure summary of axe in English                                                                                              |
+| `evidence`                    | in English or Italian: contrast (`#c9c9c9 on #f7f5ff, 1.53:1 (needs 4.5:1)`), a missing accessible name, a target that is too small, an invalid language code, an unknown ARIA role or attribute, an ARIA attribute that is not allowed; nothing for other rules |
+| `principle`                   | the WCAG criterion from the tags (`wcag143` is 1.4.3, `wcag1411` is 1.4.11), with its name in English or Italian; a best practice has no code                                                                                                                    |
+| `location`                    | the mark's own selector and box, with `count` = the number of elements of the rule; or the page                                                                                                                                                                  |
 
 Per rule, the first 10 marks by position (top, then left, then mark number) become findings. Two elements on one
 mark are one finding. At most 50 elements of a rule are looked at, in the order axe gives them, and at most 400
 elements are measured in one analysis; the rest are left out and only counted in `count`. The score does not read
 `count`, but it does not need to: a rule weighs `1 + 0.1 × (occurrences − 1)` up to a cap of 2, so 10 findings weigh
 1.9 and the cap is reached at 11: the 10 that are kept lose at most 5%.
+
+## The catalog
+
+`src/catalog/en.json` and `src/catalog/it.json` hold the title, the explanation and the fix of 30 common rules, written
+by FlawDot. They are loaded by `src/default-catalog.ts` (`defaultCatalog`), which is built when the module loads: a
+file that is wrong (a blank text, a text over the limits of a finding, a key that was not asked for) stops the program
+at start, and the error names the language, never the text. For a rule that is not in the catalog:
+
+- in Italian, the title and the explanation are the `help` and the `description` that axe wrote in `locales/it.json`,
+  and the fix is the title (axe has no fix text). If axe has no Italian text for the rule (`aria-tab-name`,
+  `summary-name`), or the entry is not usable, the finding keeps the English text of axe;
+- in English, the finding keeps the English text of axe, which already ran in English.
+
+The Italian file of axe is the data of a dependency, so what is not usable is skipped instead of failing. To add a rule,
+add the same key to both files; a test checks that both have exactly the rules that the contract lists, that every rule
+is one that axe really runs, that Italian is not a copy of English, and that no text has a marker of unfinished work.
+`evidenceFor` and `principleFor` write in the language of the report too.
 
 ## Hostile pages
 
@@ -71,8 +88,9 @@ the page.
   (a paragraph or a control that contains it); otherwise it is a finding of the page. A closed shadow root is not
   reached at all (neither does axe reach into it).
 - A page can have more elements than the budget; the ones beyond it are only counted.
-- axe 4.14 has no rule for duplicate ids, so there is no evidence for them; other evidence families are added one
-  extractor at a time.
+- axe 4.14 has no rule for duplicate ids, so there is no evidence for them. Evidence exists for the families listed
+  above; any other is added one extractor at a time, after checking the shape of the data in a real result.
+- The Italian fix of a rule outside the catalog is the same text as its title.
 - Axe scans the whole document, also what is off screen or below the cut of the picture; such elements usually have
   no mark and are reported on the page.
 

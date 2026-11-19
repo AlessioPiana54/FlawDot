@@ -1,0 +1,152 @@
+{
+  "color-contrast": {
+    "title": "Il testo si distingue poco dallo sfondo",
+    "explanation": "Un testo con poco contrasto è difficile da leggere per chi ha una vista ridotta, con molta luce o su uno schermo poco luminoso. Il testo normale richiede un rapporto di contrasto di almeno 4,5:1, quello grande almeno 3:1.",
+    "fix": "Scurisci il testo o schiarisci lo sfondo (o viceversa) fino a raggiungere 4,5:1. Ad esempio, #767676 su bianco è il grigio più chiaro che supera la soglia. Controlla la coppia di colori con uno strumento per il contrasto."
+  },
+  "image-alt": {
+    "title": "L'immagine non ha un testo alternativo",
+    "explanation": "Uno screen reader non può descrivere un'immagine senza testo alt, quindi chi non la vede perde ciò che mostra.",
+    "fix": "Aggiungi un attributo alt che dica cosa mostra o cosa fa l'immagine, ad esempio alt=\"Grafico a barre delle vendite mensili\". Se l'immagine è solo decorativa, usa un alt vuoto: alt=\"\"."
+  },
+  "link-name": {
+    "title": "Il link non ha un testo leggibile",
+    "explanation": "Un link senza testo né etichetta viene letto solo come «link», quindi nessuno capisce dove porta.",
+    "fix": "Inserisci nel link un testo leggibile, oppure aggiungi un aria-label che dica dove porta, ad esempio aria-label=\"Apri la pagina dei prezzi\". Dai un'etichetta anche ai link fatti solo di icona."
+  },
+  "button-name": {
+    "title": "Il pulsante non ha un nome accessibile",
+    "explanation": "Un pulsante senza nome viene letto solo come «pulsante», quindi chi usa uno screen reader o il controllo vocale non sa cosa faccia.",
+    "fix": "Scrivi un testo visibile nel pulsante. Se contiene solo un'icona, aggiungi un aria-label, ad esempio <button aria-label=\"Chiudi\">."
+  },
+  "label": {
+    "title": "Il campo del modulo non ha un'etichetta",
+    "explanation": "Senza etichetta, chi usa uno screen reader non sa cosa scrivere, e il campo è più difficile da cliccare o toccare.",
+    "fix": "Collega al campo una <label for=\"id\">, oppure racchiudi il campo nella label. Non affidarti al solo placeholder."
+  },
+  "html-has-lang": {
+    "title": "La pagina non dichiara la lingua",
+    "explanation": "Gli screen reader usano la lingua della pagina per scegliere la voce e la pronuncia. Senza, il testo può essere letto con l'accento sbagliato.",
+    "fix": "Aggiungi la lingua all'elemento radice, ad esempio <html lang=\"it\">."
+  },
+  "document-title": {
+    "title": "La pagina non ha un titolo",
+    "explanation": "Il titolo è la prima cosa che uno screen reader annuncia, ed è il nome mostrato nelle schede del browser e nei risultati di ricerca. Senza, le pagine non si distinguono.",
+    "fix": "Aggiungi nell'<head> un <title> breve e unico che dica di cosa parla la pagina."
+  },
+  "heading-order": {
+    "title": "I livelli dei titoli saltano un passaggio",
+    "explanation": "Chi usa uno screen reader si sposta nella pagina con i titoli. Un salto da h2 a h4 fa pensare che manchi un contenuto e rompe la struttura.",
+    "fix": "Usa i livelli dei titoli in ordine, uno alla volta (h1, h2, h3). Scegli il livello in base alla struttura e regola la dimensione con il CSS."
+  },
+  "empty-heading": {
+    "title": "Il titolo è vuoto",
+    "explanation": "Un titolo senza testo viene letto come una tappa vuota nella struttura della pagina e confonde chi naviga per titoli.",
+    "fix": "Scrivi il testo del titolo, oppure elimina il tag se serve solo per creare spazio. Per lo spazio usa il CSS."
+  },
+  "page-has-heading-one": {
+    "title": "La pagina non ha un titolo principale",
+    "explanation": "Un h1 dice di cosa parla la pagina e dà a chi usa uno screen reader un punto a cui saltare.",
+    "fix": "Aggiungi un solo <h1> con l'argomento principale della pagina e usa h2 e seguenti per le sezioni."
+  },
+  "landmark-one-main": {
+    "title": "La pagina non ha un'area main",
+    "explanation": "L'area main permette a chi usa uno screen reader o la tastiera di saltare i menu e andare dritto al contenuto.",
+    "fix": "Racchiudi il contenuto centrale della pagina in un solo elemento <main> (o role=\"main\")."
+  },
+  "region": {
+    "title": "Parte del contenuto è fuori da ogni area",
+    "explanation": "Il contenuto fuori dalle aree (landmark) è difficile da trovare per chi usa uno screen reader, che salta tra l'intestazione, la navigazione, il contenuto principale e il piè di pagina.",
+    "fix": "Metti tutto il contenuto visibile dentro aree: <header>, <nav>, <main>, <footer>, oppure sezioni con un'etichetta."
+  },
+  "select-name": {
+    "title": "Il menu a tendina non ha un'etichetta",
+    "explanation": "Senza etichetta, chi usa uno screen reader non sa cosa sta scegliendo.",
+    "fix": "Collega una <label for=\"id\"> al <select>, oppure aggiungi un aria-label."
+  },
+  "input-button-name": {
+    "title": "Il pulsante input non ha un testo",
+    "explanation": "Un pulsante fatto con <input type=\"submit\"> o simili ha bisogno di un valore, altrimenti viene letto come un pulsante senza nome.",
+    "fix": "Dagli un attributo value, ad esempio <input type=\"submit\" value=\"Invia\">."
+  },
+  "input-image-alt": {
+    "title": "Il pulsante immagine non ha un testo alternativo",
+    "explanation": "Un <input type=\"image\"> funziona da pulsante, quindi lo screen reader deve sapere cosa fa.",
+    "fix": "Aggiungi un attributo alt che dica l'azione, ad esempio alt=\"Cerca\"."
+  },
+  "frame-title": {
+    "title": "Il frame non ha un titolo",
+    "explanation": "Gli screen reader leggono il titolo di un iframe, così chi ascolta sa cosa contiene prima di entrarci.",
+    "fix": "Aggiungi all'<iframe> un title che descriva il contenuto, ad esempio title=\"Mappa del nostro ufficio\"."
+  },
+  "aria-hidden-focus": {
+    "title": "Un contenuto nascosto può ancora ricevere il focus",
+    "explanation": "Un elemento nascosto con aria-hidden=\"true\" che si può ancora raggiungere è invisibile per lo screen reader ma non per la tastiera, quindi il focus finisce su qualcosa che non viene letto.",
+    "fix": "Togli aria-hidden dall'elemento, oppure rendi non raggiungibile tutto ciò che contiene (tabindex=\"-1\", disabled, o nascosto con display:none)."
+  },
+  "aria-roles": {
+    "title": "Il ruolo ARIA non esiste",
+    "explanation": "Un ruolo scritto male o inventato viene ignorato, quindi le tecnologie assistive non ricevono nessuna informazione su cosa sia l'elemento.",
+    "fix": "Usa un ruolo ARIA valido della specifica, oppure togli il ruolo se un elemento nativo come <button> fa già il lavoro."
+  },
+  "aria-valid-attr-value": {
+    "title": "Un attributo ARIA ha un valore non valido",
+    "explanation": "Un attributo ARIA con un valore che non va bene, come aria-expanded=\"forse\" o un id che non esiste, viene ignorato oppure inganna.",
+    "fix": "Usa un valore accettato dall'attributo (ad esempio true o false) e controlla che gli id in aria-labelledby, aria-controls e simili puntino a elementi esistenti."
+  },
+  "aria-required-attr": {
+    "title": "Al ruolo ARIA manca un attributo obbligatorio",
+    "explanation": "Alcuni ruoli hanno bisogno di attributi per funzionare: una casella di controllo vuole aria-checked, un cursore vuole aria-valuenow. Senza, lo stato dell'elemento è sconosciuto.",
+    "fix": "Aggiungi gli attributi richiesti dal ruolo, oppure usa l'elemento nativo (come <input type=\"checkbox\">), che li gestisce da solo."
+  },
+  "aria-allowed-attr": {
+    "title": "Un attributo ARIA non è consentito su questo elemento",
+    "explanation": "Un attributo ARIA che non appartiene al ruolo dell'elemento viene ignorato oppure confonde le tecnologie assistive.",
+    "fix": "Togli l'attributo, oppure cambia il ruolo o l'elemento in modo che sia consentito. Controlla quali attributi supporta il ruolo."
+  },
+  "aria-input-field-name": {
+    "title": "Il campo personalizzato non ha un nome accessibile",
+    "explanation": "Un campo personalizzato, come un combobox o un cursore, senza nome lascia chi usa uno screen reader a indovinare cosa inserire.",
+    "fix": "Aggiungi un aria-label, oppure punta aria-labelledby a un testo visibile che lo nomini."
+  },
+  "aria-command-name": {
+    "title": "Il comando personalizzato non ha un nome accessibile",
+    "explanation": "Un elemento con ruolo link, button o menuitem e senza nome viene letto solo con il suo ruolo, senza dire cosa fa.",
+    "fix": "Aggiungi un testo visibile, un aria-label o un aria-labelledby che dica cosa fa il comando."
+  },
+  "aria-required-children": {
+    "title": "Al ruolo ARIA mancano gli elementi figli obbligatori",
+    "explanation": "Alcuni ruoli sono contenitori che devono avere figli precisi, come una lista che contiene delle voci. Senza, la struttura è rotta per le tecnologie assistive.",
+    "fix": "Aggiungi i ruoli figli richiesti (ad esempio role=\"listitem\" dentro role=\"list\"), oppure usa gli elementi nativi <ul> e <li>."
+  },
+  "role-img-alt": {
+    "title": "L'elemento con ruolo img non ha un testo alternativo",
+    "explanation": "Un elemento con role=\"img\" è trattato come un'immagine, quindi ha bisogno di un testo alternativo.",
+    "fix": "Aggiungi un aria-label o un aria-labelledby che descriva l'immagine, oppure togli role=\"img\" se è solo decorativa."
+  },
+  "svg-img-alt": {
+    "title": "L'SVG che fa da immagine non ha un testo alternativo",
+    "explanation": "Un SVG con role=\"img\" è trattato come un'immagine, quindi lo screen reader ha bisogno di un testo che dica cosa mostra.",
+    "fix": "Aggiungi un <title> dentro l'SVG o un aria-label, oppure aria-hidden=\"true\" se è solo decorativo."
+  },
+  "list": {
+    "title": "La lista non è fatta di voci di lista",
+    "explanation": "Gli screen reader annunciano quante voci ha una lista. Un <ul> o <ol> che contiene altri elementi falsa quel conteggio.",
+    "fix": "Metti direttamente dentro <ul> e <ol> solo elementi <li> (e script o template)."
+  },
+  "listitem": {
+    "title": "La voce di lista è fuori da una lista",
+    "explanation": "Un <li> fuori da un <ul> o da un <ol> non viene riconosciuto come parte di una lista.",
+    "fix": "Metti ogni <li> direttamente dentro un <ul> o un <ol>."
+  },
+  "target-size": {
+    "title": "L'area da toccare o cliccare è troppo piccola",
+    "explanation": "Le aree piccole sono difficili da colpire con un dito, con il mouse o con un tremore, e si premono per errore quando sono vicine a un'altra. WCAG 2.2 chiede almeno 24 per 24 pixel CSS.",
+    "fix": "Porta l'area ad almeno 24x24 px con larghezza, altezza o padding, oppure lascia abbastanza spazio intorno. Per il tocco, 44x44 px è più comodo."
+  },
+  "meta-viewport": {
+    "title": "Lo zoom è bloccato nella pagina",
+    "explanation": "Bloccare lo zoom con due dita, con user-scalable=no o con un maximum-scale inferiore a 2, impedisce a chi ha una vista ridotta di ingrandire il testo.",
+    "fix": "Togli user-scalable=no e ogni maximum-scale inferiore a 2 dal meta viewport (un maximum-scale di 5 o più è ancora meglio): <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">."
+  }
+}
