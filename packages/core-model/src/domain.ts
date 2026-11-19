@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { flawDotErrorShapeSchema } from "./errors.js";
 import { markIdSchema, projectIdSchema, runIdSchema } from "./ids.js";
 
 // Domain types are plain data: every type is derived from its schema (z.infer), so what is
@@ -83,6 +84,40 @@ export type RunStatus = z.infer<typeof runStatusSchema>;
 const hasNoDuplicates = (values: readonly string[]): boolean =>
   new Set(values).size === values.length;
 
+/**
+ * What happened to one page and viewport of a run. Nothing else keeps it: a capture that failed has no findings, and
+ * without this record it would look like a page with no problems (a score of 100). A pair that is not here was never
+ * reached (the run was cancelled before it).
+ */
+export const captureOutcomeSchema = z.discriminatedUnion("status", [
+  z.object({
+    url: httpUrlSchema,
+    viewport: viewportNameSchema,
+    status: z.literal("done"),
+    screenshot: z.object({
+      path: nonEmpty,
+      width: z.int().positive(),
+      height: z.int().positive(),
+    }),
+    /** The picture with the circles, or null when drawing it failed (the findings are saved all the same). */
+    annotatedPath: nonEmpty.nullable(),
+    /** The categories that an analyzer finished on this capture. A category that is not here has no score ("—"). */
+    analyzed: z.array(categorySchema).refine((categories) => hasNoDuplicates(categories), {
+      message: "A category appears twice",
+    }),
+    needsReview: z.int().nonnegative(),
+    /** How many analyzers failed on this capture (each one also sent an `analysis_failed` event). */
+    analysisFailures: z.int().nonnegative(),
+  }),
+  z.object({
+    url: httpUrlSchema,
+    viewport: viewportNameSchema,
+    status: z.literal("failed"),
+    error: flawDotErrorShapeSchema,
+  }),
+]);
+export type CaptureOutcome = z.infer<typeof captureOutcomeSchema>;
+
 export const runSchema = z
   .object({
     id: runIdSchema,
@@ -97,6 +132,15 @@ export const runSchema = z
     // "running": still going. "completed": every page done. "cancelled": the user stopped it.
     // "partial": it ended, but some pages failed or were never reached.
     status: runStatusSchema,
+    // What the run learned while it went. All three are written when it finishes, and older runs have none.
+    /** How many places axe could not decide (counted in elements), added up over every capture. */
+    needsReview: z.int().nonnegative().optional(),
+    /** The categories that were analyzed in every capture that is done, in the order of `CATEGORIES`. */
+    analyzedCategories: z
+      .array(categorySchema)
+      .refine((categories) => hasNoDuplicates(categories), { message: "A category appears twice" })
+      .optional(),
+    captures: z.array(captureOutcomeSchema).optional(),
   })
   .refine((run) => (run.status === "running") === (run.finishedAt === null), {
     message: "A run has an end time exactly when it is no longer running",
@@ -109,7 +153,22 @@ export const runSchema = z
   .refine((run) => hasNoDuplicates(run.pages.map((page) => page.url)), {
     message: "A page appears twice",
     path: ["pages"],
-  });
+  })
+  .refine(
+    (run) => {
+      const outcomes = run.captures ?? [];
+      const urls = new Set(run.pages.map((page) => page.url));
+      const viewports = new Set(run.viewports.map((viewport) => viewport.name));
+      return (
+        outcomes.every((o) => urls.has(o.url) && viewports.has(o.viewport)) &&
+        hasNoDuplicates(outcomes.map((o) => `${o.viewport} ${o.url}`))
+      );
+    },
+    {
+      message: "An outcome is for a page and a viewport of the run, and there is one for each",
+      path: ["captures"],
+    },
+  );
 export type Run = z.infer<typeof runSchema>;
 
 /** CSS pixels, coordinates of the whole page (not of the viewport). */

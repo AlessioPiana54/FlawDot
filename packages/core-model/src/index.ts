@@ -13,4 +13,6 @@ export * from "./plugins.js";
 export * from "./errors.js";
 export * from "./parse.js";
 export * from "./events.js";
+export * from "./analysis.js";
+export * from "./report.js";
 export * from "./ports.js";

@@ -98,6 +98,14 @@ describe("public API", () => {
         "severitySchema",
         "viewportNameSchema",
         "viewportSchema",
+        "analysisPlanSchema",
+        "canonicalAddress",
+        "bandSchema",
+        "captureOutcomeSchema",
+        "reportDataSchema",
+        "reportFindingSchema",
+        "reportPageSchema",
+        "runSummarySchema",
       ].sort(),
     );
   });

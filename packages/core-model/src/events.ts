@@ -27,6 +27,16 @@ export const progressEventSchema = z.discriminatedUnion("type", [
     costUsd: z.number().nonnegative().nullable(), // null: no AI cost (rules only, or MCP)
   }),
   z.object({ type: z.literal("capture_failed"), ...pageStep, error: flawDotErrorShapeSchema }),
+  /**
+   * An analyzer failed on a page that was captured. The capture and its picture are kept; only the findings of this
+   * analyzer are missing, and its category has no score on this page.
+   */
+  z.object({
+    type: z.literal("analysis_failed"),
+    ...pageStep,
+    analyzer: z.string().min(1),
+    error: flawDotErrorShapeSchema,
+  }),
   z.object({
     type: z.literal("run_finished"),
     runId: runIdSchema,

@@ -61,7 +61,7 @@ export class FlawDotError extends Error implements FlawDotErrorShape {
 // purpose, so the one thing it needs of it is declared here. Nothing is emitted for a `declare`.
 declare const URL: {
   canParse(url: string): boolean;
-  new (url: string): { readonly origin: string };
+  new (url: string): { readonly origin: string; readonly href: string; hash: string };
 };
 
 /**
@@ -71,6 +71,18 @@ declare const URL: {
  */
 export function originOf(url: string): string {
   return URL.canParse(url) ? new URL(url).origin : "the page";
+}
+
+/**
+ * An address with its spelling made the same: the host in lower case, the default port and the empty path written
+ * out, and no fragment (the part after "#" is not sent to the server, so it is not another page). Two addresses that
+ * give the same answer from this are one page. An address that cannot be read is given back as it is.
+ */
+export function canonicalAddress(url: string): string {
+  if (!URL.canParse(url)) return url;
+  const address = new URL(url);
+  address.hash = "";
+  return address.href;
 }
 
 export function isFlawDotError(value: unknown): value is FlawDotError {

@@ -34,7 +34,8 @@ export const DEFAULT_WEIGHTS: Readonly<CategoryWeights> = {
   conversion: 0.25,
 };
 
-export type Band = "excellent" | "good" | "needs_work" | "critical";
+export const bandSchema = z.enum(["excellent", "good", "needs_work", "critical"]);
+export type Band = z.infer<typeof bandSchema>;
 
 /** The penalty of one finding: the one of its severity, scaled by the confidence for an AI suggestion. */
 export function findingWeight(finding: Finding): number {

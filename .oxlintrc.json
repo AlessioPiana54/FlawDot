@@ -239,6 +239,88 @@
       }
     },
     {
+      "files": ["packages/kernel/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/annotation",
+                  "@flawdot/discovery",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "axe-core",
+                  "@axe-core/*",
+                  "@anthropic-ai/*",
+                  "@modelcontextprotocol/*",
+                  "hono",
+                  "@hono/*"
+                ],
+                "message": "kernel may import only core-model; its tests may also use storage and test-support (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/kernel/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/annotation",
+                  "@flawdot/discovery",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "axe-core",
+                  "@axe-core/*",
+                  "@anthropic-ai/*",
+                  "@modelcontextprotocol/*",
+                  "hono",
+                  "@hono/*",
+                  "@flawdot/storage",
+                  "@flawdot/test-support",
+                  "vitest",
+                  "zod",
+                  "@napi-rs/*",
+                  "node:*"
+                ],
+                "message": "kernel src may import only core-model: no adapter, no test helper and no runtime module (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "files": ["packages/test-support/**/*.ts"],
       "rules": {
         "no-restricted-imports": [
