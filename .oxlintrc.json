@@ -128,6 +128,49 @@
       }
     },
     {
+      "files": ["packages/annotation/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/storage",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*"
+                ],
+                "message": "annotation may import only core-model and sharp (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/annotation/src/**/*.ts"],
+      "rules": {
+        "no-restricted-globals": [
+          "error",
+          { "name": "document", "message": "annotation draws with sharp; it has no page code." },
+          { "name": "window", "message": "annotation draws with sharp; it has no page code." },
+          { "name": "CSS", "message": "annotation draws with sharp; it has no page code." }
+        ]
+      }
+    },
+    {
       "files": ["packages/core-model/**/*.ts"],
       "rules": {
         "no-restricted-imports": [
