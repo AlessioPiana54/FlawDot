@@ -20,6 +20,8 @@ describe("public API", () => {
         "elementsInTile",
         "markForBox",
         "originOf",
+        "pathOf",
+        "singlePagePlan",
         "tileSchema",
         "AI_RESPONSE_JSON_SCHEMA",
         "MAX_AI_FINDINGS",

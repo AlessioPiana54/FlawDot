@@ -48,3 +48,6 @@ jobs:
       # B3 of docs/CONSTRAINTS.md section 4: the run summary warns above the limit, and the job fails above twice it.
       - name: Benchmarks
         run: pnpm bench
+      # The built file of the cli (`flawdot mcp`), started as a real process over real pipes with a real Chromium.
+      - name: Built cli
+        run: pnpm --filter @flawdot/cli test:dist

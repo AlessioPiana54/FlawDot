@@ -374,6 +374,144 @@
           }
         ]
       }
+    },
+    {
+      "files": ["packages/mcp-server/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/annotation",
+                  "@flawdot/discovery",
+                  "@flawdot/web-*",
+                  "@flawdot/cli",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "axe-core",
+                  "@axe-core/*",
+                  "@anthropic-ai/*",
+                  "hono",
+                  "@hono/*"
+                ],
+                "message": "mcp-server may import core-model, kernel and the MCP SDK; no adapter (ADR-0001, A1)."
+              },
+              {
+                "group": ["../../*"],
+                "message": "Imports must stay inside the package."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/mcp-server/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@flawdot/kernel"],
+                "allowTypeImports": true,
+                "message": "mcp-server src may use kernel as a type only: the kernel is given to it, never imported (ADR-0001, A1)."
+              },
+              {
+                "group": [
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/annotation",
+                  "@flawdot/discovery",
+                  "@flawdot/web-*",
+                  "@flawdot/cli",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "axe-core",
+                  "@axe-core/*",
+                  "@anthropic-ai/*",
+                  "hono",
+                  "@hono/*",
+                  "@flawdot/storage",
+                  "@flawdot/test-support",
+                  "vitest",
+                  "@modelcontextprotocol/client",
+                  "node:fs",
+                  "node:fs/*",
+                  "fs",
+                  "fs/*",
+                  "node:child_process",
+                  "node:net",
+                  "node:http",
+                  "node:https",
+                  "node:os"
+                ],
+                "message": "mcp-server src has no adapter, no test helper and no file system: pictures and settings are given to it (ADR-0001, A1)."
+              },
+              {
+                "group": ["../../*"],
+                "message": "Imports must stay inside the package."
+              }
+            ]
+          }
+        ],
+        "no-console": "error",
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "process",
+            "message": "stdout belongs to the protocol: log through deps.log, and read nothing from the process."
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/cli/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@flawdot/test-support", "vitest"],
+                "message": "Test helpers do not ship in the cli."
+              },
+              {
+                "group": ["../../*"],
+                "message": "Imports must stay inside the package."
+              }
+            ]
+          }
+        ],
+        "no-console": "error",
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "process",
+            "message": "Only io.ts and index.ts read the process: everything else gets an Io."
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/cli/src/io.ts", "packages/cli/src/index.ts"],
+      "rules": {
+        "no-restricted-globals": "off"
+      }
     }
   ]
 }

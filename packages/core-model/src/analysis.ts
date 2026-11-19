@@ -6,9 +6,13 @@ import {
   reportLanguageSchema,
   runStatusSchema,
   viewportNameSchema,
+  type AiMode,
+  type ReportLanguage,
+  type ViewportName,
 } from "./domain.js";
-import { canonicalAddress, originOf } from "./errors.js";
+import { canonicalAddress, originOf, pathOf } from "./errors.js";
 import { projectIdSchema, runIdSchema } from "./ids.js";
+import { parseOrThrow } from "./parse.js";
 import { bandSchema } from "./scoring.js";
 
 const hasNoDuplicates = (values: readonly string[]): boolean =>
@@ -43,6 +47,34 @@ export const analysisPlanSchema = z
     { message: "Every page must be on the origin of the project", path: ["pages"] },
   );
 export type AnalysisPlan = z.infer<typeof analysisPlanSchema>;
+
+/**
+ * The plan of one page, from the address the user typed. The origin is the project, the template is the path (a page
+ * alone is its own template), and the address is written one way, with no fragment. Throws INVALID_INPUT for an address
+ * that is not http or https or carries a password, and for a viewport that is missing or twice. The message names
+ * where the problem is, never what was typed.
+ */
+export function singlePagePlan(
+  url: string,
+  options: {
+    readonly viewports: readonly ViewportName[];
+    readonly language: ReportLanguage;
+    readonly ai: AiMode;
+  },
+): AnalysisPlan {
+  const address = canonicalAddress(parseOrThrow(httpUrlSchema, url, { what: "page address" }));
+  return parseOrThrow(
+    analysisPlanSchema,
+    {
+      projectOrigin: originOf(address),
+      pages: [{ url: address, templateKey: pathOf(address), templateSize: 1 }],
+      viewports: [...options.viewports],
+      language: options.language,
+      ai: options.ai,
+    },
+    { what: "analysis plan" },
+  );
+}
 
 /** What a finished run comes to, in numbers: what `RunHandle.done` gives, and what a list of past runs shows. */
 export const runSummarySchema = z.object({

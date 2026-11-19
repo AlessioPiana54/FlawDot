@@ -61,7 +61,12 @@ export class FlawDotError extends Error implements FlawDotErrorShape {
 // purpose, so the one thing it needs of it is declared here. Nothing is emitted for a `declare`.
 declare const URL: {
   canParse(url: string): boolean;
-  new (url: string): { readonly origin: string; readonly href: string; hash: string };
+  new (url: string): {
+    readonly origin: string;
+    readonly href: string;
+    readonly pathname: string;
+    hash: string;
+  };
 };
 
 /**
@@ -71,6 +76,11 @@ declare const URL: {
  */
 export function originOf(url: string): string {
   return URL.canParse(url) ? new URL(url).origin : "the page";
+}
+
+/** The path of an address ("/blog/post"), with no query and no fragment; "/" when the address cannot be read. */
+export function pathOf(url: string): string {
+  return URL.canParse(url) ? new URL(url).pathname : "/";
 }
 
 /**

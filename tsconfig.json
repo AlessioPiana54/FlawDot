@@ -21,6 +21,12 @@
     },
     {
       "path": "packages/kernel"
+    },
+    {
+      "path": "packages/mcp-server"
+    },
+    {
+      "path": "packages/cli"
     }
   ]
 }
