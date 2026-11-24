@@ -15,6 +15,12 @@ const validEvents = [
     error: { code: "TIMEOUT", message: "The page took too long to load.", retryable: true },
   },
   { type: "run_finished", runId: RUN_ULID, status: "partial" },
+  {
+    type: "analysis_failed",
+    ...step,
+    analyzer: "accessibility-wcag",
+    error: { code: "TIMEOUT", message: "The analysis took too long.", retryable: true },
+  },
 ] as const;
 
 describe("progressEvent", () => {

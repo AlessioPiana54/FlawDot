@@ -4,6 +4,8 @@ import {
   FlawDotError,
   flawDotErrorShapeSchema,
   isFlawDotError,
+  canonicalAddress,
+  originOf,
   type FlawDotErrorCode,
 } from "../src/index.js";
 
@@ -69,5 +71,39 @@ describe("error shape schema", () => {
     expect(
       flawDotErrorShapeSchema.safeParse({ code: "BOOM", message: "x", retryable: false }).success,
     ).toBe(false);
+  });
+});
+
+describe("originOf: the part of an address that may go in a message", () => {
+  it("is the origin, with no path, query or fragment", () => {
+    expect(originOf("https://shop.example:8443/a/b?token=SECRET#x")).toBe(
+      "https://shop.example:8443",
+    );
+    expect(originOf("http://user:pass@127.0.0.1:3000/x")).toBe("http://127.0.0.1:3000");
+  });
+
+  it("is a neutral name for an address that cannot be read", () => {
+    expect(originOf("not a url")).toBe("the page");
+    expect(originOf("")).toBe("the page");
+  });
+});
+
+describe("canonicalAddress: the spelling of an address made the same", () => {
+  it.each([
+    ["http://a.com", "http://a.com/"],
+    ["HTTP://A.COM/Path", "http://a.com/Path"],
+    ["https://a.com:443/x", "https://a.com/x"],
+    ["http://a.com/x#top", "http://a.com/x"],
+  ])("writes %s as %s", (given, canonical) => {
+    expect(canonicalAddress(given)).toBe(canonical);
+  });
+
+  it("keeps what makes a page another page: the path and the query", () => {
+    expect(canonicalAddress("http://a.com/x?page=2")).toBe("http://a.com/x?page=2");
+    expect(canonicalAddress("http://a.com/x")).not.toBe(canonicalAddress("http://a.com/y"));
+  });
+
+  it("gives back an address that cannot be read as it was", () => {
+    expect(canonicalAddress("not a url")).toBe("not a url");
   });
 });

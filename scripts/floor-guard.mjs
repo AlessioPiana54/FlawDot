@@ -160,28 +160,32 @@ const scan = (baseRef) => {
     }
   }
 
-  // Rule 6, the limits of the benchmarks (CONSTRAINTS §4): scripts/bench-limits.json says, per benchmark, how many
-  // milliseconds are a warning and how many a failure. A HIGHER number is the loosened one. A number that was
-  // removed without another in its place is a limit that is gone. Same pairing as the coverage thresholds above.
-  const BENCH_LIMITS_FILE = "scripts/bench-limits.json";
-  const BENCH_LIMIT = /"(warnMs|failMs)"\s*:\s*(\d+(?:\.\d+)?)/;
-  const limitNums = (lines, key) =>
+  // Rule 6, the limits of time: scripts/bench-limits.json says, per benchmark, how many milliseconds are a warning
+  // and how many a failure (CONSTRAINTS §4), and scripts/check-time-limits.json says how many seconds `check:task` may
+  // take before it warns and before it fails (§5). A HIGHER number is the loosened one. A number that was removed
+  // without another in its place is a limit that is gone. Same pairing as the coverage thresholds above.
+  const TIME_LIMIT_FILES = [
+    { file: "scripts/bench-limits.json", keys: ["warnMs", "failMs"] },
+    { file: "scripts/check-time-limits.json", keys: ["warnSeconds", "failSeconds"] },
+  ];
+  const TIME_LIMIT = /"(warnMs|failMs|warnSeconds|failSeconds)"\s*:\s*(\d+(?:\.\d+)?)/;
+  const limitNums = (lines, file, key) =>
     lines
-      .filter((l) => l.file === BENCH_LIMITS_FILE)
-      .map((l) => BENCH_LIMIT.exec(l.text))
+      .filter((l) => l.file === file)
+      .map((l) => TIME_LIMIT.exec(l.text))
       .filter((m) => m && m[1] === key)
       .map((m) => Number(m[2]));
-  for (const key of ["warnMs", "failMs"]) {
-    const before = limitNums(removed, key);
-    const after = limitNums(added, key);
-    before.forEach((b, i) => {
-      const a = after[i];
-      if (a === undefined) flag("threshold-removed", BENCH_LIMITS_FILE, `${key}: ${b}`);
-      else if (a > b) flag("threshold-loosened", BENCH_LIMITS_FILE, `${key}: ${b} -> ${a}`);
-    });
-  }
-  if (deleted.includes(BENCH_LIMITS_FILE)) {
-    flag("threshold-removed", BENCH_LIMITS_FILE, "file deleted");
+  for (const { file, keys } of TIME_LIMIT_FILES) {
+    for (const key of keys) {
+      const before = limitNums(removed, file, key);
+      const after = limitNums(added, file, key);
+      before.forEach((b, i) => {
+        const a = after[i];
+        if (a === undefined) flag("threshold-removed", file, `${key}: ${b}`);
+        else if (a > b) flag("threshold-loosened", file, `${key}: ${b} -> ${a}`);
+      });
+    }
+    if (deleted.includes(file)) flag("threshold-removed", file, "file deleted");
   }
 
   // Exceptions of docs/CONSTRAINTS.md section 7 that are written in these files. Each is the exact text the user
@@ -218,8 +222,19 @@ const scan = (baseRef) => {
       tokens: ["- name:", "gitleaks", "osv-scanner", "semgrep", "pnpm bench"],
     },
     {
-      test: /^scripts\/(quality-gate|diff-coverage|bench-gate)\.mjs$/,
+      test: /^scripts\/(quality-gate|diff-coverage|bench-gate|check-task)\.mjs$/,
       tokens: ["process.exit", "exitCode"],
+    },
+    {
+      // The phases of the check at the end of a task: one that is dropped from the list is a check that is gone.
+      test: /^scripts\/check-task\.mjs$/,
+      tokens: [
+        "check:fast",
+        "floor-guard.mjs",
+        "--coverage",
+        "diff-coverage.mjs",
+        "process.exit(1)",
+      ],
     },
   ];
   const count = (lines, token) => lines.filter((l) => l.text.includes(token)).length;

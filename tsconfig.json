@@ -6,6 +6,27 @@
     },
     {
       "path": "packages/capture"
+    },
+    {
+      "path": "packages/analyzer-rules"
+    },
+    {
+      "path": "packages/annotation"
+    },
+    {
+      "path": "packages/test-support"
+    },
+    {
+      "path": "packages/storage"
+    },
+    {
+      "path": "packages/kernel"
+    },
+    {
+      "path": "packages/mcp-server"
+    },
+    {
+      "path": "packages/cli"
     }
   ]
 }

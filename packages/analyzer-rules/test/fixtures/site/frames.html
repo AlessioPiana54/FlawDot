@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Frames</title>
+    <style>
+      body {
+        margin: 0;
+        font: 16px/24px sans-serif;
+      }
+      iframe {
+        width: 300px;
+        height: 80px;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Frames</h1>
+      <!-- A field with no label inside an iframe, and a button with no name inside a shadow root. -->
+      <iframe
+        title="inner"
+        srcdoc="<!doctype html><html lang='en'><title>f</title><input id='fi'>"
+      ></iframe>
+      <p>Toggle: <span id="host" style="display: inline-block"></span></p>
+    </main>
+    <script>
+      document.getElementById("host").attachShadow({ mode: "open" }).innerHTML =
+        '<button id="sb" style="width:44px;height:44px"></button>';
+    </script>
+  </body>
+</html>

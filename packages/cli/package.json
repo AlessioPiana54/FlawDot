@@ -1,0 +1,38 @@
+{
+  "name": "@flawdot/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "flawdot": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "test:dist": "tsdown && vitest run --config vitest.e2e.config.ts"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "axe-core": "4.14.1",
+    "playwright-core": "1.65.1",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@flawdot/analyzer-rules": "workspace:*",
+    "@flawdot/annotation": "workspace:*",
+    "@flawdot/capture": "workspace:*",
+    "@flawdot/core-model": "workspace:*",
+    "@flawdot/kernel": "workspace:*",
+    "@flawdot/mcp-server": "workspace:*",
+    "@flawdot/storage": "workspace:*",
+    "@flawdot/test-support": "workspace:*",
+    "@modelcontextprotocol/client": "2.4.0",
+    "@modelcontextprotocol/server": "2.4.0",
+    "@types/node": "24.19.2",
+    "tsdown": "0.23.7",
+    "zod": "4.6.7"
+  }
+}

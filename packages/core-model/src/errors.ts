@@ -57,6 +57,44 @@ export class FlawDotError extends Error implements FlawDotErrorShape {
   }
 }
 
+// `URL` is in every runtime FlawDot supports (Node 24+), but this package is compiled with no environment types on
+// purpose, so the one thing it needs of it is declared here. Nothing is emitted for a `declare`.
+declare const URL: {
+  canParse(url: string): boolean;
+  new (url: string): {
+    readonly origin: string;
+    readonly href: string;
+    readonly pathname: string;
+    hash: string;
+  };
+};
+
+/**
+ * The origin of an address ("https://shop.example"), for a message. An error message is shown to the user and written
+ * to logs, and a path or a query string can hold a token, so a message names the origin and nothing more. An address
+ * that cannot be read is called "the page".
+ */
+export function originOf(url: string): string {
+  return URL.canParse(url) ? new URL(url).origin : "the page";
+}
+
+/** The path of an address ("/blog/post"), with no query and no fragment; "/" when the address cannot be read. */
+export function pathOf(url: string): string {
+  return URL.canParse(url) ? new URL(url).pathname : "/";
+}
+
+/**
+ * An address with its spelling made the same: the host in lower case, the default port and the empty path written
+ * out, and no fragment (the part after "#" is not sent to the server, so it is not another page). Two addresses that
+ * give the same answer from this are one page. An address that cannot be read is given back as it is.
+ */
+export function canonicalAddress(url: string): string {
+  if (!URL.canParse(url)) return url;
+  const address = new URL(url);
+  address.hash = "";
+  return address.href;
+}
+
 export function isFlawDotError(value: unknown): value is FlawDotError {
   return value instanceof FlawDotError;
 }

@@ -1,6 +1,6 @@
 // Ports towards the outside world (dependency inversion): the kernel and the plugins use them, adapters implement
 // them. They stay whole: each module that uses one narrows it with `Pick<>` to what it needs. The contract tests
-// that every adapter of a port must pass are written with the first adapter (the in-memory storage).
+// that every adapter of a port must pass are in `@flawdot/test-support`; each adapter runs them in its own tests.
 import type { AiAnalysisRequest } from "./ai-request.js";
 import type { Capture, Project, Run } from "./domain.js";
 import type { Finding, FindingState } from "./finding.js";
@@ -83,6 +83,10 @@ export interface Annotator {
  * "tile.png"). So the screenshot, the marked screenshot and the annotated one of a page share one `name`, and a caller
  * never has to know how a store spells an extension. A tile has the name of its page with the number of the tile
  * added ("<name>__t3"), so the tiles of a page are told apart by the name and not by a second argument.
+ *
+ * The exception is `export`: only the exporter knows the format, so its `name` carries the extension ("report.pdf").
+ * A store makes the folder of the path it hands out and refuses a name that could lead out of it, by throwing a
+ * `FlawDotError` with the code `INVALID_INPUT`.
  */
 export interface ArtifactStore {
   pathFor(

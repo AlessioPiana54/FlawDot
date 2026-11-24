@@ -41,10 +41,10 @@ Follow the repository for updates.
 
 ## Code map
 
-This is how the modules of `capture` (the Chromium page capture) and of `core-model` (the shared domain package) depend on each other. The map is generated from
+This is how the modules inside each package depend on each other: `cli`, `mcp-server`, `kernel`, `analyzer-rules`, `annotation`, `storage`, `capture` and `core-model`. The map is generated from
 the code with [graphify](https://github.com/safishamsi/graphify), and it is redrawn when the structure changes.
 
-![Dependency map of the capture modules (capture.ts at the top, navigation-errors.ts at the bottom) and of the core-model modules (plugins depends on ports, down to errors, ids and sha256)](assets/code-map.svg)
+![Dependency map of the modules of each package, one panel per package, from cli (top) to core-model (bottom); in each panel the entry module is at the top and the foundations are at the bottom](assets/code-map.svg)
 
 You can explore the whole repository the same way. The full knowledge graph is not committed (it is rebuilt locally),
 so it only exists after you generate it:

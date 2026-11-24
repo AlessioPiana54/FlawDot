@@ -59,6 +59,302 @@
       "rules": { "no-restricted-globals": "off" }
     },
     {
+      "files": ["packages/analyzer-rules/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-ai",
+                  "@flawdot/ai-*",
+                  "@flawdot/storage",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli"
+                ],
+                "message": "analyzer-rules may import only core-model, Playwright and axe (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/analyzer-rules/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-ai",
+                  "@flawdot/ai-*",
+                  "@flawdot/storage",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*"
+                ],
+                "message": "analyzer-rules src may import only core-model, Playwright and axe; capture is for tests only (A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ],
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "document",
+            "message": "axe runs in the page by itself; this package has no page code."
+          },
+          {
+            "name": "window",
+            "message": "axe runs in the page by itself; this package has no page code."
+          },
+          {
+            "name": "CSS",
+            "message": "axe runs in the page by itself; this package has no page code."
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/annotation/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/storage",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*"
+                ],
+                "message": "annotation may import only core-model and sharp (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/annotation/src/**/*.ts"],
+      "rules": {
+        "no-restricted-globals": [
+          "error",
+          { "name": "document", "message": "annotation draws with sharp; it has no page code." },
+          { "name": "window", "message": "annotation draws with sharp; it has no page code." },
+          { "name": "CSS", "message": "annotation draws with sharp; it has no page code." }
+        ]
+      }
+    },
+    {
+      "files": ["packages/storage/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/annotation",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp"
+                ],
+                "message": "storage may import only core-model (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/storage/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/annotation",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "@flawdot/test-support",
+                  "vitest"
+                ],
+                "message": "storage src may import only core-model; the contract suites are for tests only (A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/kernel/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/annotation",
+                  "@flawdot/discovery",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "axe-core",
+                  "@axe-core/*",
+                  "@anthropic-ai/*",
+                  "@modelcontextprotocol/*",
+                  "hono",
+                  "@hono/*"
+                ],
+                "message": "kernel may import only core-model; its tests may also use storage and test-support (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/kernel/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/annotation",
+                  "@flawdot/discovery",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "axe-core",
+                  "@axe-core/*",
+                  "@anthropic-ai/*",
+                  "@modelcontextprotocol/*",
+                  "hono",
+                  "@hono/*",
+                  "@flawdot/storage",
+                  "@flawdot/test-support",
+                  "vitest",
+                  "zod",
+                  "@napi-rs/*",
+                  "node:*"
+                ],
+                "message": "kernel src may import only core-model: no adapter, no test helper and no runtime module (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/test-support/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/annotation",
+                  "@flawdot/storage",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp"
+                ],
+                "message": "test-support may import only core-model and vitest, never an adapter (ADR-0001, A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "files": ["packages/core-model/**/*.ts"],
       "rules": {
         "no-restricted-imports": [
@@ -71,12 +367,150 @@
               },
               {
                 "group": ["playwright", "playwright-core", "playwright/*", "@playwright/*"],
-                "message": "Only the capture package may depend on Playwright (ADR-0001)."
+                "message": "Only capture and analyzer-rules may depend on Playwright (ADR-0001)."
               },
               { "group": ["../../*"], "message": "Imports must stay inside the package." }
             ]
           }
         ]
+      }
+    },
+    {
+      "files": ["packages/mcp-server/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/annotation",
+                  "@flawdot/discovery",
+                  "@flawdot/web-*",
+                  "@flawdot/cli",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "axe-core",
+                  "@axe-core/*",
+                  "@anthropic-ai/*",
+                  "hono",
+                  "@hono/*"
+                ],
+                "message": "mcp-server may import core-model, kernel and the MCP SDK; no adapter (ADR-0001, A1)."
+              },
+              {
+                "group": ["../../*"],
+                "message": "Imports must stay inside the package."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/mcp-server/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@flawdot/kernel"],
+                "allowTypeImports": true,
+                "message": "mcp-server src may use kernel as a type only: the kernel is given to it, never imported (ADR-0001, A1)."
+              },
+              {
+                "group": [
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/ai-*",
+                  "@flawdot/annotation",
+                  "@flawdot/discovery",
+                  "@flawdot/web-*",
+                  "@flawdot/cli",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "axe-core",
+                  "@axe-core/*",
+                  "@anthropic-ai/*",
+                  "hono",
+                  "@hono/*",
+                  "@flawdot/storage",
+                  "@flawdot/test-support",
+                  "vitest",
+                  "@modelcontextprotocol/client",
+                  "node:fs",
+                  "node:fs/*",
+                  "fs",
+                  "fs/*",
+                  "node:child_process",
+                  "node:net",
+                  "node:http",
+                  "node:https",
+                  "node:os"
+                ],
+                "message": "mcp-server src has no adapter, no test helper and no file system: pictures and settings are given to it (ADR-0001, A1)."
+              },
+              {
+                "group": ["../../*"],
+                "message": "Imports must stay inside the package."
+              }
+            ]
+          }
+        ],
+        "no-console": "error",
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "process",
+            "message": "stdout belongs to the protocol: log through deps.log, and read nothing from the process."
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/cli/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@flawdot/test-support", "vitest"],
+                "message": "Test helpers do not ship in the cli."
+              },
+              {
+                "group": ["../../*"],
+                "message": "Imports must stay inside the package."
+              }
+            ]
+          }
+        ],
+        "no-console": "error",
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "process",
+            "message": "Only io.ts and index.ts read the process: everything else gets an Io."
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/cli/src/io.ts", "packages/cli/src/index.ts"],
+      "rules": {
+        "no-restricted-globals": "off"
       }
     }
   ]

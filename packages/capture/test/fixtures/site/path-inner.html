@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Path inner</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      #inner {
+        position: absolute;
+        left: 40px;
+        top: 30px;
+        width: 80px;
+        height: 24px;
+      }
+      #deeper {
+        position: absolute;
+        left: 10px;
+        top: 70px;
+        width: 150px;
+        height: 60px;
+        border: 0;
+      }
+      #sh {
+        position: absolute;
+        left: 0;
+        top: 140px;
+        width: 100px;
+        height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="inner">inner</button>
+    <iframe id="deeper" title="deeper" src="/path-deepest.html"></iframe>
+    <div id="sh"></div>
+    <script>
+      document.getElementById("sh").attachShadow({ mode: "open" }).innerHTML =
+        '<b id="sx" style="position:absolute;left:3px;top:2px;width:10px;height:10px"></b>';
+    </script>
+  </body>
+</html>

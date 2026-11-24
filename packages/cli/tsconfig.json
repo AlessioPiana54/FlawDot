@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist",
+    "types": ["node"],
+    "resolveJsonModule": true
+  },
+  "include": ["src", "test", "e2e", "tsdown.config.ts", "vitest.e2e.config.ts", "package.json"],
+  "references": [
+    { "path": "../core-model" },
+    { "path": "../kernel" },
+    { "path": "../capture" },
+    { "path": "../analyzer-rules" },
+    { "path": "../annotation" },
+    { "path": "../storage" },
+    { "path": "../test-support" },
+    { "path": "../mcp-server" }
+  ]
+}

@@ -1,0 +1,77 @@
+import type { ReportLanguage } from "@flawdot/core-model";
+
+/** The names of the WCAG criteria, by number ("1.4.3"), in each language of the report. */
+export type WcagCriteriaTable = ReadonlyMap<string, Readonly<Record<ReportLanguage, string>>>;
+
+// The criteria at levels A and AA of WCAG 2.0, 2.1 and 2.2: the ones that the axe tags wcag2a to wcag22aa can name.
+// The short names are written here by FlawDot; the criteria and their numbers are the W3C's.
+const NAMES: ReadonlyArray<readonly [string, string, string]> = [
+  ["1.1.1", "Non-text Content", "Contenuti non testuali"],
+  ["1.2.1", "Audio-only and Video-only (Prerecorded)", "Solo audio e solo video (preregistrati)"],
+  ["1.2.2", "Captions (Prerecorded)", "Sottotitoli (preregistrati)"],
+  [
+    "1.2.3",
+    "Audio Description or Media Alternative (Prerecorded)",
+    "Audiodescrizione o alternativa multimediale (preregistrati)",
+  ],
+  ["1.2.4", "Captions (Live)", "Sottotitoli (dal vivo)"],
+  ["1.2.5", "Audio Description (Prerecorded)", "Audiodescrizione (preregistrata)"],
+  ["1.3.1", "Info and Relationships", "Informazioni e relazioni"],
+  ["1.3.2", "Meaningful Sequence", "Sequenza significativa"],
+  ["1.3.3", "Sensory Characteristics", "Caratteristiche sensoriali"],
+  ["1.3.4", "Orientation", "Orientamento"],
+  ["1.3.5", "Identify Input Purpose", "Identificare lo scopo dell'input"],
+  ["1.4.1", "Use of Color", "Uso del colore"],
+  ["1.4.2", "Audio Control", "Controllo dell'audio"],
+  ["1.4.3", "Contrast (Minimum)", "Contrasto (minimo)"],
+  ["1.4.4", "Resize Text", "Ridimensionamento del testo"],
+  ["1.4.5", "Images of Text", "Immagini di testo"],
+  ["1.4.10", "Reflow", "Riflusso"],
+  ["1.4.11", "Non-text Contrast", "Contrasto dei contenuti non testuali"],
+  ["1.4.12", "Text Spacing", "Spaziatura del testo"],
+  ["1.4.13", "Content on Hover or Focus", "Contenuto al passaggio del mouse o al focus"],
+  ["2.1.1", "Keyboard", "Tastiera"],
+  ["2.1.2", "No Keyboard Trap", "Nessuna trappola per la tastiera"],
+  ["2.1.4", "Character Key Shortcuts", "Scorciatoie con tasti carattere"],
+  ["2.2.1", "Timing Adjustable", "Tempo regolabile"],
+  ["2.2.2", "Pause, Stop, Hide", "Pausa, stop, nascondi"],
+  ["2.3.1", "Three Flashes or Below Threshold", "Tre lampeggi o sotto la soglia"],
+  ["2.4.1", "Bypass Blocks", "Salto dei blocchi"],
+  ["2.4.2", "Page Titled", "Titolo della pagina"],
+  ["2.4.3", "Focus Order", "Ordine del focus"],
+  ["2.4.4", "Link Purpose (In Context)", "Scopo del link (nel contesto)"],
+  ["2.4.5", "Multiple Ways", "Modi multipli"],
+  ["2.4.6", "Headings and Labels", "Intestazioni ed etichette"],
+  ["2.4.7", "Focus Visible", "Focus visibile"],
+  ["2.4.11", "Focus Not Obscured (Minimum)", "Focus non oscurato (minimo)"],
+  ["2.5.1", "Pointer Gestures", "Gesti del puntatore"],
+  ["2.5.2", "Pointer Cancellation", "Annullamento del puntatore"],
+  ["2.5.3", "Label in Name", "Etichetta nel nome"],
+  ["2.5.4", "Motion Actuation", "Attivazione tramite movimento"],
+  ["2.5.7", "Dragging Movements", "Movimenti di trascinamento"],
+  ["2.5.8", "Target Size (Minimum)", "Dimensione del bersaglio (minima)"],
+  ["3.1.1", "Language of Page", "Lingua della pagina"],
+  ["3.1.2", "Language of Parts", "Lingua delle parti"],
+  ["3.2.1", "On Focus", "Al focus"],
+  ["3.2.2", "On Input", "All'input"],
+  ["3.2.3", "Consistent Navigation", "Navigazione coerente"],
+  ["3.2.4", "Consistent Identification", "Identificazione coerente"],
+  ["3.2.6", "Consistent Help", "Aiuto coerente"],
+  ["3.3.1", "Error Identification", "Identificazione dell'errore"],
+  ["3.3.2", "Labels or Instructions", "Etichette o istruzioni"],
+  ["3.3.3", "Error Suggestion", "Suggerimento per l'errore"],
+  [
+    "3.3.4",
+    "Error Prevention (Legal, Financial, Data)",
+    "Prevenzione degli errori (legali, finanziari, dati)",
+  ],
+  ["3.3.7", "Redundant Entry", "Inserimento ridondante"],
+  ["3.3.8", "Accessible Authentication (Minimum)", "Autenticazione accessibile (minima)"],
+  ["4.1.1", "Parsing", "Analisi sintattica"],
+  ["4.1.2", "Name, Role, Value", "Nome, ruolo, valore"],
+  ["4.1.3", "Status Messages", "Messaggi di stato"],
+];
+
+export const WCAG_CRITERIA: WcagCriteriaTable = new Map(
+  NAMES.map(([code, en, it]) => [code, { en, it }] as const),
+);

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Path hostile</title>
+    <style>
+      body {
+        margin: 0;
+        height: 1000px;
+      }
+      #host {
+        position: absolute;
+        left: 20px;
+        top: 100px;
+        width: 200px;
+        height: 60px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- A page that replaces what a script would use to look for an element: the element must still be found. -->
+    <div id="host"></div>
+    <script>
+      const host = document.getElementById("host");
+      host.attachShadow({ mode: "open" }).innerHTML =
+        '<button id="sb" style="position:absolute;left:8px;top:4px;width:50px;height:20px"></button>';
+      Object.defineProperty(host, "shadowRoot", { value: null });
+      document.querySelector = () => null;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist",
+    "types": ["node"]
+  },
+  "include": ["src", "src/**/*.json", "test"],
+  "references": [{ "path": "../core-model" }, { "path": "../capture" }]
+}
