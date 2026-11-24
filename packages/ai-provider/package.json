@@ -1,0 +1,20 @@
+{
+  "name": "@flawdot/ai-provider",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "record-fixtures": "node scripts/record-fixtures.mjs"
+  },
+  "dependencies": {
+    "@flawdot/core-model": "workspace:*"
+  },
+  "devDependencies": {
+    "@flawdot/test-support": "workspace:*",
+    "@types/node": "24.19.2"
+  }
+}

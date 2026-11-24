@@ -239,6 +239,76 @@
       }
     },
     {
+      "files": ["packages/ai-provider/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/annotation",
+                  "@flawdot/storage",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "@anthropic-ai/*"
+                ],
+                "message": "ai-provider may import only core-model; tests may also use test-support. The Anthropic SDK comes with the ClaudeProvider (Task 35), not before (ADR-0001, A1, N1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/ai-provider/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@flawdot/kernel",
+                  "@flawdot/kernel/*",
+                  "@flawdot/analyzer-*",
+                  "@flawdot/web-*",
+                  "@flawdot/mcp-*",
+                  "@flawdot/cli",
+                  "@flawdot/capture",
+                  "@flawdot/capture/*",
+                  "@flawdot/annotation",
+                  "@flawdot/storage",
+                  "playwright",
+                  "playwright-core",
+                  "playwright/*",
+                  "@playwright/*",
+                  "sharp",
+                  "@anthropic-ai/*",
+                  "@flawdot/test-support",
+                  "vitest"
+                ],
+                "message": "ai-provider src may import only core-model; the contract suites are for tests only (A1)."
+              },
+              { "group": ["../../*"], "message": "Imports must stay inside the package." }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "files": ["packages/kernel/**/*.ts"],
       "rules": {
         "no-restricted-imports": [

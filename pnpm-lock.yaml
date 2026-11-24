@@ -194,6 +194,19 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(@types/node@24.19.2)(@vitest/coverage-v8@5.1.0)(vite@8.3.8(@types/node@24.19.2))
 
+  packages/ai-provider:
+    dependencies:
+      '@flawdot/core-model':
+        specifier: workspace:*
+        version: link:../core-model
+    devDependencies:
+      '@flawdot/test-support':
+        specifier: workspace:*
+        version: link:../test-support
+      '@types/node':
+        specifier: 24.19.2
+        version: 24.19.2
+
   packages/analyzer-rules:
     dependencies:
       '@axe-core/playwright':

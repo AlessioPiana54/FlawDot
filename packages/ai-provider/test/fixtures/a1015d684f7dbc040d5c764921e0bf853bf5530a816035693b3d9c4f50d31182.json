@@ -1,0 +1,23 @@
+{
+  "describe": "ui-visual, tile 0 (desktop) of https://example.com",
+  "kind": "answer",
+  "response": {
+    "findings": [
+      {
+        "mark": 1,
+        "severity": "medium",
+        "ruleKey": "weak-call-to-action",
+        "title": "The main button does not stand out",
+        "explanation": "It has the same weight as the links around it.",
+        "fix": "Give it a stronger color and more space.",
+        "evidence": null,
+        "principle": {
+          "code": null,
+          "label": "Visual hierarchy"
+        },
+        "confidence": 0.8
+      }
+    ]
+  },
+  "model": "claude-sonnet-5-5"
+}

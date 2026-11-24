@@ -2,9 +2,13 @@ import {
   DEFAULT_VIEWPORTS,
   findingIdSchema,
   findingSchema,
+  markIdSchema,
+  parseAiResponse,
   projectIdSchema,
   runIdSchema,
   runSchema,
+  type AiAnalysisRequest,
+  type AiAnalysisResponse,
   type Clock,
   type Finding,
   type FindingId,
@@ -66,6 +70,52 @@ export function makeRun(overrides: Partial<Run> = {}): Run {
     pages: [{ url: "https://example.com/", templateKey: "/", templateSize: 1 }],
     status: "completed",
     ...overrides,
+  });
+}
+
+/** A valid request for the tile 0 of a page, with one element. Every field can be replaced. */
+export function sampleAiRequest(overrides: Partial<AiAnalysisRequest> = {}): AiAnalysisRequest {
+  return {
+    requestId: "req-1",
+    runId: runId(1),
+    pageUrl: "https://example.com/",
+    viewport: "desktop",
+    tile: 0,
+    promptVersion: "v1",
+    analyzer: "ui-visual",
+    language: "en",
+    instructions: "Find visual problems in this tile.",
+    image: { path: "runs/run-1/tile-0.png", mediaType: "image/png" },
+    elements: [
+      {
+        mark: markIdSchema.parse(1),
+        tag: "button",
+        role: "button",
+        name: "Buy now",
+        box: { x: 10, y: 20, width: 100, height: 40 },
+      },
+    ],
+    responseSchema: { type: "object" },
+    ...overrides,
+  };
+}
+
+/** A valid answer with one finding on the element 1 of `sampleAiRequest()`. */
+export function sampleAiResponse(): AiAnalysisResponse {
+  return parseAiResponse({
+    findings: [
+      {
+        mark: 1,
+        severity: "medium",
+        ruleKey: "weak-call-to-action",
+        title: "The main button does not stand out",
+        explanation: "It has the same weight as the links around it.",
+        fix: "Give it a stronger color and more space.",
+        evidence: null,
+        principle: { code: null, label: "Visual hierarchy" },
+        confidence: 0.8,
+      },
+    ],
   });
 }
 

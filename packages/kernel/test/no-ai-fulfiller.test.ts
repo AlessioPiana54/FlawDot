@@ -1,4 +1,5 @@
 import type { AiAnalysisRequest } from "@flawdot/core-model";
+import { runAiFulfillerContract } from "@flawdot/test-support";
 import { describe, expect, it } from "vitest";
 import { createNoAiFulfiller } from "../src/index.js";
 
@@ -25,3 +26,6 @@ describe("NoAiFulfiller", () => {
     );
   });
 });
+
+// The same contract that the fulfillers of the user's key and of Claude Code pass (packages/ai-provider runs it on them).
+runAiFulfillerContract(() => ({ subject: createNoAiFulfiller(), expects: "not_analyzed" }));

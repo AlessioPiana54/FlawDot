@@ -76,3 +76,15 @@ export function useFixture<F extends Fixture<unknown>>(
     return current;
   };
 }
+
+/**
+ * Freezes a value and everything inside it. A suite gives a frozen request to the subject: in strict mode a write to a
+ * frozen object throws, so a subject that changes what it is given fails there.
+ */
+export function frozen<T>(value: T): T {
+  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
+    Object.freeze(value);
+    for (const inner of Object.values(value)) frozen(inner);
+  }
+  return value;
+}
